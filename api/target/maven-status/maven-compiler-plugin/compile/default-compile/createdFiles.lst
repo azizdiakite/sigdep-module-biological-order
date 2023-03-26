@@ -1,6 +1,0 @@
-org/openmrs/module/biologicalorder/BiologicalOrderConfig.class
-org/openmrs/module/biologicalorder/api/impl/BiologicalOrderServiceImpl.class
-org/openmrs/module/biologicalorder/api/BiologicalOrderService.class
-org/openmrs/module/biologicalorder/Item.class
-org/openmrs/module/biologicalorder/BiologicalOrderActivator.class
-org/openmrs/module/biologicalorder/api/dao/BiologicalOrderDao.class
