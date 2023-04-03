@@ -19,7 +19,7 @@ file="/WEB-INF/template/header.jsp"%> <%--
   file="${pageContext.request.contextPath}/moduleResources/biologicalorder/polyfills.8ee688643d37928f.js"
 />
 <openmrs:htmlInclude
-  file="${pageContext.request.contextPath}/moduleResources/biologicalorder/main.2788da078395a4d4.js"
+  file="${pageContext.request.contextPath}/moduleResources/biologicalorder/main.274eef8cdb5f8764.js"
 />
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>
