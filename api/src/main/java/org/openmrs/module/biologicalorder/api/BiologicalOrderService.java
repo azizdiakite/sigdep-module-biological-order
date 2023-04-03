@@ -11,10 +11,8 @@ package org.openmrs.module.biologicalorder.api;
 
 import org.openmrs.*;
 import org.openmrs.annotation.Authorized;
-import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.biologicalorder.BiologicalOrderConfig;
-import org.openmrs.module.biologicalorder.Item;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -24,21 +22,20 @@ import java.util.Date;
  * moduleApplicationContext.xml on how it is wired up.
  */
 public interface BiologicalOrderService extends OpenmrsService {
+	
 	/**
-	 *
 	 * @param concept
 	 * @param date
 	 * @param location
 	 * @param encounterType
 	 * @return Obs
 	 */
-
+	
 	@Authorized(BiologicalOrderConfig.MODULE_PRIVILEGE)
 	@Transactional
 	Obs getLatestObsByConcept(Person person, Concept concept, Date date, Location location, EncounterType encounterType);
-
+	
 	/**
-	 *
 	 * @param encounterType
 	 * @param date
 	 * @return Encounter
@@ -46,5 +43,5 @@ public interface BiologicalOrderService extends OpenmrsService {
 	@Authorized(BiologicalOrderConfig.MODULE_PRIVILEGE)
 	@Transactional
 	Encounter getLatestEncounter(EncounterType encounterType, Date date);
-
+	
 }

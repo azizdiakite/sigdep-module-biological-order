@@ -10,10 +10,8 @@
 package org.openmrs.module.biologicalorder.api.impl;
 
 import org.openmrs.*;
-import org.openmrs.api.APIException;
 import org.openmrs.api.UserService;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.biologicalorder.Item;
 import org.openmrs.module.biologicalorder.api.BiologicalOrderService;
 import org.openmrs.module.biologicalorder.api.dao.BiologicalOrderDao;
 
@@ -38,13 +36,13 @@ public class BiologicalOrderServiceImpl extends BaseOpenmrsService implements Bi
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
-
-
+	
 	@Override
-	public Obs getLatestObsByConcept(Person person, Concept concept, Date date, Location location, EncounterType encounterType) {
+	public Obs getLatestObsByConcept(Person person, Concept concept, Date date, Location location,
+	        EncounterType encounterType) {
 		return dao.getLatestObsByConcept(person, concept, date, location, encounterType);
 	}
-
+	
 	@Override
 	public Encounter getLatestEncounter(EncounterType encounterType, Date date) {
 		return dao.getLatestEncounter(encounterType, date);
