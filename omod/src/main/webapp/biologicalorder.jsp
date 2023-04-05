@@ -4,22 +4,22 @@ file="/WEB-INF/template/header.jsp"%> <%--
 --%>
 
 <openmrs:htmlInclude
-  file="${pageContext.request.contextPath}/moduleResources/biologicalorder/styles.ef46db3751d8e999.css"
+  file="${pageContext.request.contextPath}/moduleResources/biologicalorder/styles.css"
 />
 <openmrs:htmlInclude
-  file="${pageContext.request.contextPath}/moduleResources/biologicalorder/main.ef46db3751d8e999.css"
+  file="${pageContext.request.contextPath}/moduleResources/biologicalorder/main.css"
 />
 
 <div id="root"></div>
 
 <openmrs:htmlInclude
-  file="${pageContext.request.contextPath}/moduleResources/biologicalorder/runtime.010460a976245417.js"
+  file="${pageContext.request.contextPath}/moduleResources/biologicalorder/runtime.js"
 />
 <openmrs:htmlInclude
-  file="${pageContext.request.contextPath}/moduleResources/biologicalorder/polyfills.8ee688643d37928f.js"
+  file="${pageContext.request.contextPath}/moduleResources/biologicalorder/polyfills.js"
 />
 <openmrs:htmlInclude
-  file="${pageContext.request.contextPath}/moduleResources/biologicalorder/main.274eef8cdb5f8764.js"
+  file="${pageContext.request.contextPath}/moduleResources/biologicalorder/main.js"
 />
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>
