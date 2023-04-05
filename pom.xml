@@ -1,269 +1,112 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  	
-  <modelVersion>4.0.0</modelVersion>
-      
-  <parent>
-            
-    <groupId>org.openmrs.maven.parents</groupId>
-            
-    <artifactId>maven-parent-openmrs-module</artifactId>
-            
-    <version>1.1.1</version>
-        
-  </parent>
-  	
-  <groupId>org.openmrs.module</groupId>
-  	
-  <artifactId>biologicalorder</artifactId>
-  	
-  <version>1.0.0</version>
-  	
-  <packaging>pom</packaging>
-  	
-  <name>BiologicalOrder</name>
-  	
-  <description>no description</description>
-  	
-  <url>https://wiki.openmrs.org/x/FQ4z</url>
-  	
-  <scm>
-    		
-    <connection>scm:git:git@github.com:openmrs/openmrs-module-biologicalorder.git</connection>
-    		
-    <developerConnection>scm:git:git@github.com:openmrs/openmrs-module-biologicalorder.git</developerConnection>
-    		
-    <url>https://github.com/openmrs/openmrs-module-biologicalorder/</url>
-    	
-  </scm>
-  	
-  <dependencyManagement>
-    		
-    <dependencies>
-      			
-      <dependency>
-        				
-        <groupId>org.openmrs</groupId>
-        				
-        <artifactId>event-api</artifactId>
-        				
-        <version>2.5</version>
-        				
-        <scope>provided</scope>
-        			
-      </dependency>
-      			
-      <dependency>
-        				
-        <groupId>org.openmrs.module</groupId>
-        				
-        <artifactId>fhir2-api</artifactId>
-        				
-        <version>${fhir2Version}</version>
-        				
-        <scope>provided</scope>
-        			
-      </dependency>
-      			
-      <dependency>
-        				
-        <groupId>org.openmrs.module</groupId>
-        				
-        <artifactId>fhir2-omod</artifactId>
-        				
-        <version>${fhir2Version}</version>
-        				
-        <scope>provided</scope>
-        			
-      </dependency>
-      			
-      <dependency>
-        				
-        <groupId>org.openmrs.module</groupId>
-        				
-        <artifactId>labonfhir-api</artifactId>
-        				
-        <version>${labOnFhirVersion}</version>
-        				
-        <scope>provided</scope>
-        			
-      </dependency>
-      			
-      <dependency>
-        				
-        <groupId>org.openmrs.module</groupId>
-        				
-        <artifactId>labonfhir</artifactId>
-        				
-        <version>${labOnFhirVersion}</version>
-        				
-        <scope>provided</scope>
-        			
-      </dependency>
-      			
-      <dependency>
-        				
-        <groupId>org.projectlombok</groupId>
-        				
-        <artifactId>lombok</artifactId>
-        				
-        <version>1.18.12</version>
-        				
-        <scope>provided</scope>
-        			
-      </dependency>
-      			
-      <dependency>
-        				
-        <groupId>org.openmrs.module</groupId>
-        				
-        <artifactId>legacyui-omod</artifactId>
-        				
-        <version>1.8.3</version>
-        				
-        <scope>provided</scope>
-        			
-      </dependency>
-      			
-      <!-- Begin OpenMRS core -->
-      			
-      <dependency>
-        				
-        <groupId>org.openmrs.api</groupId>
-        				
-        <artifactId>openmrs-api</artifactId>
-        				
-        <version>${openmrsPlatformVersion}</version>
-        				
-        <type>jar</type>
-        				
-        <scope>provided</scope>
-        			
-      </dependency>
-      			
-      <dependency>
-        				
-        <groupId>org.openmrs.web</groupId>
-        				
-        <artifactId>openmrs-web</artifactId>
-        				
-        <version>${openmrsPlatformVersion}</version>
-        				
-        <type>jar</type>
-        				
-        <scope>provided</scope>
-        			
-      </dependency>
-      			
-      <dependency>
-        				
-        <groupId>org.openmrs.api</groupId>
-        				
-        <artifactId>openmrs-api</artifactId>
-        				
-        <version>${openmrsPlatformVersion}</version>
-        				
-        <type>test-jar</type>
-        				
-        <scope>test</scope>
-        			
-      </dependency>
-      			
-      <dependency>
-        				
-        <groupId>org.openmrs.web</groupId>
-        				
-        <artifactId>openmrs-web</artifactId>
-        				
-        <version>${openmrsPlatformVersion}</version>
-        				
-        <type>test-jar</type>
-        				
-        <scope>test</scope>
-        			
-      </dependency>
-      			
-      <dependency>
-        				
-        <groupId>org.openmrs.test</groupId>
-        				
-        <artifactId>openmrs-test</artifactId>
-        				
-        <version>${openmrsPlatformVersion}</version>
-        				
-        <type>pom</type>
-        				
-        <scope>test</scope>
-        			
-      </dependency>
-      			
-      <!-- End OpenMRS core -->
-      		
-    </dependencies>
-    	
-  </dependencyManagement>
-  	
-  <modules>
-    		
-    <module>api</module>
-    <module>omod</module>
-
-  </modules>
-  	
-  <repositories>
-    		
-    <repository>
-      			
-      <id>openmrs-repo</id>
-      			
-      <name>OpenMRS Nexus Repository</name>
-      			
-      <url>https://mavenrepo.openmrs.org/public</url>
-      		
-    </repository>
-    		
-    <repository>
-      			
-      <id>central</id>
-      			
-      <name>Maven Repository Switchboard</name>
-      			
-      <layout>default</layout>
-      			
-      <url>https://repo1.maven.org/maven2</url>
-      		
-    </repository>
-    	
-  </repositories>
-  	
-  <pluginRepositories>
-    		
-    <pluginRepository>
-      			
-      <id>openmrs-repo</id>
-      			
-      <name>OpenMRS Nexus Repository</name>
-      			
-      <url>https://mavenrepo.openmrs.org/public</url>
-      			
-      <snapshots>
-        				
-        <enabled>false</enabled>
-        			
-      </snapshots>
-      		
-    </pluginRepository>
-    	
-  </pluginRepositories>
-      
-  <properties>
-            
-    <openmrsPlatformVersion>2.3.1</openmrsPlatformVersion>
-    		
-    <fhir2Version>1.8.0</fhir2Version>
-    		
-    <labOnFhirVersion>1.2.0</labOnFhirVersion>
-        
-  </properties>
-  
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.openmrs.maven.parents</groupId>
+		<artifactId>maven-parent-openmrs-module</artifactId>
+		<version>1.1.1</version>
+	</parent>
+	<groupId>org.openmrs.module</groupId>
+	<artifactId>biologicalorder</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+	<name>BiologicalOrder</name>
+	<description>no description</description>
+	<url>https://wiki.openmrs.org/x/FQ4z</url>
+	<scm>
+		<connection>scm:git:git@github.com:openmrs/openmrs-module-biologicalorder.git</connection>
+		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-biologicalorder.git</developerConnection>
+		<url>https://github.com/openmrs/openmrs-module-biologicalorder/</url>
+	</scm>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.openmrs</groupId>
+				<artifactId>event-api</artifactId>
+				<version>2.5</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.18.12</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.openmrs.module</groupId>
+				<artifactId>legacyui-omod</artifactId>
+				<version>1.8.3</version>
+				<scope>provided</scope>
+			</dependency>
+			<!-- Begin OpenMRS core -->
+			<dependency>
+				<groupId>org.openmrs.api</groupId>
+				<artifactId>openmrs-api</artifactId>
+				<version>${openmrsPlatformVersion}</version>
+				<type>jar</type>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.openmrs.web</groupId>
+				<artifactId>openmrs-web</artifactId>
+				<version>${openmrsPlatformVersion}</version>
+				<type>jar</type>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.openmrs.api</groupId>
+				<artifactId>openmrs-api</artifactId>
+				<version>${openmrsPlatformVersion}</version>
+				<type>test-jar</type>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.openmrs.web</groupId>
+				<artifactId>openmrs-web</artifactId>
+				<version>${openmrsPlatformVersion}</version>
+				<type>test-jar</type>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.openmrs.test</groupId>
+				<artifactId>openmrs-test</artifactId>
+				<version>${openmrsPlatformVersion}</version>
+				<type>pom</type>
+				<scope>test</scope>
+			</dependency>
+			<!-- End OpenMRS core -->
+		</dependencies>
+	</dependencyManagement>
+	<modules>
+		<module>api</module>
+		<module>omod</module>
+	</modules>
+	<repositories>
+		<repository>
+			<id>openmrs-repo</id>
+			<name>OpenMRS Nexus Repository</name>
+			<url>https://mavenrepo.openmrs.org/public</url>
+		</repository>
+		<repository>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<layout>default</layout>
+			<url>https://repo1.maven.org/maven2</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>openmrs-repo</id>
+			<name>OpenMRS Nexus Repository</name>
+			<url>https://mavenrepo.openmrs.org/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+	<properties>
+		<openmrsPlatformVersion>2.3.1</openmrsPlatformVersion>
+	</properties>
 </project>
