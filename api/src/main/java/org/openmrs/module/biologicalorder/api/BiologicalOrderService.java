@@ -16,6 +16,7 @@ import org.openmrs.module.biologicalorder.BiologicalOrderConfig;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * The main service of this module, which is exposed for other modules. See
@@ -43,5 +44,14 @@ public interface BiologicalOrderService extends OpenmrsService {
 	@Authorized(BiologicalOrderConfig.MODULE_PRIVILEGE)
 	@Transactional
 	Encounter getLatestEncounter(EncounterType encounterType, Date date);
+	
+	/**
+	 * @param encounterType
+	 * @param startDate * @param endDate
+	 * @return List<Encounter>
+	 */
+	@Authorized(BiologicalOrderConfig.MODULE_PRIVILEGE)
+	@Transactional
+	List<Encounter> getLatestPatientEncounters(EncounterType encounterType, Date startDate, Date endDate);
 	
 }

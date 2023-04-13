@@ -16,6 +16,7 @@ import org.openmrs.module.biologicalorder.api.BiologicalOrderService;
 import org.openmrs.module.biologicalorder.api.dao.BiologicalOrderDao;
 
 import java.util.Date;
+import java.util.List;
 
 public class BiologicalOrderServiceImpl extends BaseOpenmrsService implements BiologicalOrderService {
 	
@@ -46,5 +47,10 @@ public class BiologicalOrderServiceImpl extends BaseOpenmrsService implements Bi
 	@Override
 	public Encounter getLatestEncounter(EncounterType encounterType, Date date) {
 		return dao.getLatestEncounter(encounterType, date);
+	}
+	
+	@Override
+	public List<Encounter> getLatestPatientEncounters(EncounterType encounterType, Date startDate, Date endDate) {
+		return dao.getLatestPatientEncounters(encounterType, startDate, endDate);
 	}
 }

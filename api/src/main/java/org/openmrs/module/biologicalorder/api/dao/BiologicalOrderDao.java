@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository("biologicalorder.BiologicalOrderDao")
 public class BiologicalOrderDao {
@@ -44,4 +45,14 @@ public class BiologicalOrderDao {
 		        .add(Restrictions.eq("encounterDatetime", date)).addOrder(Order.desc("encounterDatetime")).setMaxResults(1)
 		        .uniqueResult();
 	}
+	
+	public List<Encounter> getLatestPatientEncounters(EncounterType encounterType, Date startDate, Date endDate) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Encounter.class);
+		criteria.add(Restrictions.between("encounterDatetime", startDate, endDate));
+		criteria.add(Restrictions.eq("encounterType", encounterType));
+		criteria.add(Restrictions.eq("voided", false));
+		criteria.addOrder(Order.desc("encounterDatetime"));
+		return criteria.list();
+	}
+	
 }
