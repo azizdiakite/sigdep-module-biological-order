@@ -46,10 +46,19 @@ public class BiologicalOrderDao {
 		        .uniqueResult();
 	}
 	
-	public List<Encounter> getLatestPatientEncounters(EncounterType encounterType, Date startDate, Date endDate) {
+	public List<Encounter> getLatestEncounterList(EncounterType encounterType, Date startDate, Date endDate) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Encounter.class);
 		criteria.add(Restrictions.between("encounterDatetime", startDate, endDate));
 		criteria.add(Restrictions.eq("encounterType", encounterType));
+		criteria.add(Restrictions.eq("voided", false));
+		criteria.addOrder(Order.desc("encounterDatetime"));
+		return criteria.list();
+	}
+	
+	public List<Encounter> getLatestPatientEncounterList(Patient patient, EncounterType encounterType) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Encounter.class);
+		criteria.add(Restrictions.eq("encounterType", encounterType));
+		criteria.add(Restrictions.eq("patient", patient));
 		criteria.add(Restrictions.eq("voided", false));
 		criteria.addOrder(Order.desc("encounterDatetime"));
 		return criteria.list();

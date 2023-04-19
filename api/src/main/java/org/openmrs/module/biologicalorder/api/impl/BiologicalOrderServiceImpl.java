@@ -50,7 +50,12 @@ public class BiologicalOrderServiceImpl extends BaseOpenmrsService implements Bi
 	}
 	
 	@Override
-	public List<Encounter> getLatestPatientEncounters(EncounterType encounterType, Date startDate, Date endDate) {
-		return dao.getLatestPatientEncounters(encounterType, startDate, endDate);
+	public List<Encounter> getLatestEncounterList(EncounterType encounterType, Date startDate, Date endDate) {
+		return dao.getLatestEncounterList(encounterType, startDate, endDate);
+	}
+	
+	@Override
+	public List<Encounter> getLatestPatientEncounterList(EncounterType encounterType, Patient patient) {
+		return dao.getLatestPatientEncounterList(patient, encounterType);
 	}
 }

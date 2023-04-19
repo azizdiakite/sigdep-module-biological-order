@@ -25,8 +25,7 @@ import org.openmrs.module.biologicalorder.api.BiologicalOrderService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 
-@Resource(name = RestConstants.VERSION_1 + "/encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = {
-        "2.2.*", "2.3.*" }, order = 4)
+@Resource(name = RestConstants.VERSION_1 + "/encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = { "2.*" }, order = 4)
 public class ExtendedEncounterResource extends EncounterResource2_2 {
 	
 	@Override
@@ -34,6 +33,8 @@ public class ExtendedEncounterResource extends EncounterResource2_2 {
 		String encounterTypeUuid = context.getParameter("encounterType");
 		String startDate = context.getParameter("startDate");
 		String endDate = context.getParameter("endDate");
+		String patientUuid = context.getParameter("patient");
+		Boolean sorted = Boolean.valueOf(context.getParameter("sorted"));
 		
 		if (StringUtils.nonEmptyString(encounterTypeUuid) && StringUtils.nonEmptyString(startDate)
 		        && StringUtils.nonEmptyString(endDate)) {
@@ -45,7 +46,7 @@ public class ExtendedEncounterResource extends EncounterResource2_2 {
 				Date date2 = sourceFormat.parse(endDate);
 				if (encounterType != null) {
 					List<Encounter> encounters = Context.getService(BiologicalOrderService.class)
-					        .getLatestPatientEncounters(encounterType, date1, date2);
+					        .getLatestEncounterList(encounterType, date1, date2);
                     Set<Patient> patients = new HashSet<Patient>();
                     encounters.forEach(enc -> patients.add(enc.getPatient())); 
                     
@@ -64,6 +65,16 @@ public class ExtendedEncounterResource extends EncounterResource2_2 {
 				throw new RuntimeException(e);
 			}
 			
+		}else if(StringUtils.nonEmptyString(encounterTypeUuid) && StringUtils.nonEmptyString(patientUuid)
+		&& sorted ){
+			EncounterType encounterType = Context.getEncounterService().getEncounterTypeByUuid(encounterTypeUuid);
+			Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
+			if(encounterType != null && patient != null){
+				List<Encounter> encounters = Context.getService(BiologicalOrderService.class)
+					        .getLatestPatientEncounterList(encounterType, patient);
+				return new NeedsPaging<Encounter>(encounters, context);			
+			}				
+
 		}
 		return super.doSearch(context);
 	}

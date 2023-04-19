@@ -52,6 +52,15 @@ public interface BiologicalOrderService extends OpenmrsService {
 	 */
 	@Authorized(BiologicalOrderConfig.MODULE_PRIVILEGE)
 	@Transactional
-	List<Encounter> getLatestPatientEncounters(EncounterType encounterType, Date startDate, Date endDate);
+	List<Encounter> getLatestEncounterList(EncounterType encounterType, Date startDate, Date endDate);
+	
+	/**
+	 * @param encounterType
+	 * @param startDate * @param endDate
+	 * @return List<Encounter>
+	 */
+	@Authorized(BiologicalOrderConfig.MODULE_PRIVILEGE)
+	@Transactional
+	List<Encounter> getLatestPatientEncounterList(EncounterType encounterType, Patient patient);
 	
 }
