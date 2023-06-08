@@ -1,4 +1,7 @@
 {
   "java.compile.nullAnalysis.mode": "automatic",
-  "cSpell.words": ["biologicalorder"]
+  "cSpell.words": [
+    "biologicalorder"
+  ],
+  "java.configuration.updateBuildConfiguration": "disabled"
 }

@@ -1,0 +1,26 @@
+{
+  "name": "biological-order-patient-order--feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/biological-order/patient-order/feature/src",
+  "projectType": "library",
+  "tags": ["type:feature", "scope:biological-order"],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/biological-order/patient-order/feature/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/biological-order/patient-order/feature/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@spbogui-openmrs/biological-order/order-list/feature": [
+        "libs/biological-order/order-list/feature/src/index.ts"
+      ],
+      "@spbogui-openmrs/biological-order/order-list/ui": [
+        "libs/biological-order/order-list/ui/src/index.ts"
+      ],
+      "@spbogui-openmrs/biological-order/patient-order//feature": [
+        "libs/biological-order/patient-order/feature/src/index.ts"
+      ],
+      "@spbogui-openmrs/biological-order/patient-order/ui/order-form": [
+        "libs/biological-order/patient-order/ui/order-form/src/index.ts"
+      ],
+      "@spbogui-openmrs/biological-order/patient-order/ui/order-print": [
+        "libs/biological-order/patient-order/ui/order-print/src/index.ts"
+      ],
+      "@spbogui-openmrs/biological-order/patient-order/ui/order-result": [
+        "libs/biological-order/patient-order/ui/order-result/src/index.ts"
+      ],
+      "@spbogui-openmrs/biological-order/patient-order/ui/patient-home": [
+        "libs/biological-order/patient-order/ui/patient-home/src/index.ts"
+      ],
+      "@spbogui-openmrs/shared/model": ["libs/shared/model/src/index.ts"],
+      "@spbogui-openmrs/shared/service": ["libs/shared/service/src/index.ts"],
+      "@spbogui-openmrs/shared/ui": ["libs/shared/ui/src/index.ts"],
+      "@spbogui-openmrs/shared/utils": ["libs/shared/utils/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

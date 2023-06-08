@@ -28,3 +28,24 @@ If uploads are not allowed from the web (changable via a runtime property), you 
 into the ~/.OpenMRS/modules folder.  (Where ~/.OpenMRS is assumed to be the Application 
 Data Directory that the running openmrs is currently using.)  After putting the file in there 
 simply restart OpenMRS/tomcat and the module will be loaded and started.
+
+## for the front app developement 
+
+# Instructions
+1. first install pnpm
+    npm install -g pnpm
+
+2 move to the orderApp directory
+    cd orderApp    
+
+3. install dependencies  
+    pnpm install  
+
+4. Run in Dev mode
+    pnpm start
+
+4. Build for production
+   pnpm build
+
+# Build module and order app
+  mvn clean install   

@@ -73,6 +73,7 @@ nb-configuration.xml
 ## VSCode
 ##############################
 .vscode
+settings.json
 
 ##############################
 ## OS X
@@ -80,3 +81,8 @@ nb-configuration.xml
 .DS_Store
 
 .flattened-pom.xml
+
+# npm
+node_modules/
+build/
+.vscode/settings.json
