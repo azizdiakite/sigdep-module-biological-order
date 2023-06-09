@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -6,19 +8,16 @@
 		<artifactId>biologicalorder</artifactId>
 		<version>1.0.0</version>
 	</parent>
-
 	<artifactId>biologicalorder-omod</artifactId>
 	<packaging>jar</packaging>
 	<name>BiologicalOrder OMOD</name>
 	<description>Omod submodule for BiologicalOrder</description>
-
 	<dependencies>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>biologicalorder-api</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>biologicalorder-api</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>legacyui-omod</artifactId>
@@ -28,7 +27,7 @@
 		<dependency>
 			<groupId>org.openmrs.web</groupId>
 			<artifactId>openmrs-web</artifactId>
-            <scope>provided</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openmrs.web</groupId>
@@ -36,14 +35,12 @@
 			<scope>provided</scope>
 			<classifier>tests</classifier>
 		</dependency>
-
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>webservices.rest-omod</artifactId>
 			<version>2.26.0</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>webservices.rest-omod-common</artifactId>
@@ -52,10 +49,8 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
-
 		<plugins>
 			<plugin>
 				<groupId>org.openmrs.maven.plugins</groupId>
@@ -67,48 +62,17 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-             	<artifactId>maven-compiler-plugin</artifactId>
+				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
-		
 			<!-- Build and Package Front end app -->
 			<plugin>
-				<groupId>com.github.eirslett</groupId>
-				<artifactId>frontend-maven-plugin</artifactId>
-				<version>1.12.0</version>
-				<configuration>
-					<installDirectory>../../</installDirectory>
-					<workingDirectory>../../</workingDirectory>
-					<nodeVersion>v18.9.1</nodeVersion>
-					<npmVersion>8.19.1</npmVersion>
-				</configuration>
-				<executions>
-					<execution>
-						<id>install_node_and_npm</id>
-						<goals>
-							<goal>install-node-and-npm</goal>
-						</goals>
-						<phase>none</phase>
-					</execution>					               		
-					<execution>
-						<id>install pnpm</id>
-						<goals>
-							<goal>npm</goal>
-						</goals>
-						<configuration>
-							<arguments>install -g pnpm</arguments>
-						</configuration>
-						<phase>none</phase>
-					</execution>
-				</executions>
-			  </plugin>
-			  <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<id>pnpm-install</id>
-						<phase>generate-resources</phase>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>exec</goal>
 						</goals>
@@ -122,7 +86,7 @@
 					</execution>
 					<execution>
 						<id>pnpm-build</id>
-						<phase>generate-resources</phase>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>exec</goal>
 						</goals>
@@ -135,123 +99,122 @@
 						</configuration>
 					</execution>
 				</executions>
-				</plugin>
-				<plugin>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>3.0.0</version>
 				<executions>
 					<execution>
-					<id>rename-main-js</id>
-					<phase>generate-resources</phase>
-					<goals>
-						<goal>run</goal>
-					</goals>
-					<configuration>
-						<target>
-						   <move todir="../orderApp/dist/apps/biological-order">
-                				<fileset dir="../orderApp/dist/apps/biological-order">
-                  					<include name="main.*.js" />
-                				</fileset>
-                				<globmapper from="main.*.js" to="main.js" />
-              				</move>
-						</target>
-					</configuration>
+						<id>rename-main-js</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<move todir="../orderApp/dist/apps/biological-order">
+									<fileset dir="../orderApp/dist/apps/biological-order">
+										<include name="main.*.js" />
+									</fileset>
+									<globmapper from="main.*.js" to="main.js" />
+								</move>
+							</target>
+						</configuration>
 					</execution>
 					<execution>
-					<id>rename-polyfills-js</id>
-					<phase>generate-resources</phase>
-					<goals>
-						<goal>run</goal>
-					</goals>
-					<configuration>
-						<target>
-						   <move todir="../orderApp/dist/apps/biological-order">
-                				<fileset dir="../orderApp/dist/apps/biological-order">
-                  					<include name="polyfills.*.js" />
-                				</fileset>
-                				<globmapper from="polyfills.*.js" to="polyfills.js" />
-              				</move>
-						</target>
-					</configuration>
+						<id>rename-polyfills-js</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<move todir="../orderApp/dist/apps/biological-order">
+									<fileset dir="../orderApp/dist/apps/biological-order">
+										<include name="polyfills.*.js" />
+									</fileset>
+									<globmapper from="polyfills.*.js" to="polyfills.js" />
+								</move>
+							</target>
+						</configuration>
 					</execution>
 					<execution>
-					<id>rename-runtime-js</id>
-					<phase>generate-resources</phase>
-					<goals>
-						<goal>run</goal>
-					</goals>
-					<configuration>
-						<target>
-						   <move todir="../orderApp/dist/apps/biological-order">
-                				<fileset dir="../orderApp/dist/apps/biological-order">
-                  					<include name="runtime.*.js" />
-                				</fileset>
-                				<globmapper from="runtime.*.js" to="runtime.js" />
-              				</move>
-						</target>
-					</configuration>
+						<id>rename-runtime-js</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<move todir="../orderApp/dist/apps/biological-order">
+									<fileset dir="../orderApp/dist/apps/biological-order">
+										<include name="runtime.*.js" />
+									</fileset>
+									<globmapper from="runtime.*.js" to="runtime.js" />
+								</move>
+							</target>
+						</configuration>
 					</execution>
 					<execution>
-					<id>rename-main-css</id>
-					<phase>generate-resources</phase>
-					<goals>
-						<goal>run</goal>
-					</goals>
-					<configuration>
-						<target>
-						   <move todir="../orderApp/dist/apps/biological-order">
-                				<fileset dir="../orderApp/dist/apps/biological-order">
-                  					<include name="main.*.css" />
-                				</fileset>
-                				<globmapper from="main.*.css" to="main.css" />
-              				</move>
-						</target>
-					</configuration>
+						<id>rename-main-css</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<move todir="../orderApp/dist/apps/biological-order">
+									<fileset dir="../orderApp/dist/apps/biological-order">
+										<include name="main.*.css" />
+									</fileset>
+									<globmapper from="main.*.css" to="main.css" />
+								</move>
+							</target>
+						</configuration>
 					</execution>
 					<execution>
-					<id>rename-styles-css</id>
-					<phase>generate-resources</phase>
-					<goals>
-						<goal>run</goal>
-					</goals>
-					<configuration>
-						<target>
-						   <move todir="../orderApp/dist/apps/biological-order">
-                				<fileset dir="../orderApp/dist/apps/biological-order">
-                  					<include name="styles.*.css" />
-                				</fileset>
-                				<globmapper from="styles.*.css" to="styles.css" />
-              				</move>
-						</target>
-					</configuration>
+						<id>rename-styles-css</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<move todir="../orderApp/dist/apps/biological-order">
+									<fileset dir="../orderApp/dist/apps/biological-order">
+										<include name="styles.*.css" />
+									</fileset>
+									<globmapper from="styles.*.css" to="styles.css" />
+								</move>
+							</target>
+						</configuration>
 					</execution>
 				</executions>
-				</plugin>
-				<plugin>
-				    <groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>3.2.0</version>
-					<executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
 					<execution>
 						<id>copy-build</id>
 						<phase>generate-resources</phase>
 						<goals>
-						<goal>copy-resources</goal>
+							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-						<outputDirectory>./src/main/webapp/resources</outputDirectory>
-						<resources>          
-							<resource>
-							<directory>../orderApp/dist/apps/biological-order</directory>
-							<filtering>false</filtering>
-							</resource>
-						</resources>              
-						</configuration>            
+							<outputDirectory>./src/main/webapp/resources</outputDirectory>
+							<resources>
+								<resource>
+									<directory>../orderApp/dist/apps/biological-order</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
 					</execution>
-					</executions>
-				</plugin>
-		</plugins>		
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
-
 </project>
