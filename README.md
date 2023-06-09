@@ -30,34 +30,36 @@ Data Directory that the running openmrs is currently using.)  After putting the 
 simply restart OpenMRS/tomcat and the module will be loaded and started.
 
 ## Bilogocal Order Front-end app 
-The source code for the oder front end app can be found under [orderApp](./orderApp/) folder . 
-see [more](./orderApp/README.md)
+The source code for the oder front end app can be found under the [orderApp](./orderApp/) folder . 
+See [more](./orderApp/README.md)
 
 ### Instructions For Oder Front-end app developement 
 1. Install Node and npm  
-    see [instructions](https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/)
+    See [instructions](https://linuxize.com/post/how-to-install-node-js-on-ubuntu-18.04/)
 
-1. install pnpm  
+1. Install pnpm  
 
        npm install -g pnpm
 
-2. move to the orderApp directory   
+2. Move to the orderApp directory   
 
        cd orderApp    
 
-3. install dependencies  
+3. Install dependencies  
 
        pnpm install  
 
-4. Run in Dev mode  
+4. Run in Dev mode   
 
        pnpm start
+   The app can be accesed at http://localhost:4200/    
 
 4. Build for production  
 
        pnpm build
 
 # Build module and order app
-  The Odrer front-end app will be built and packaged into the omod  as part of the maven build 
     
     mvn clean install  
+
+The Odrer front-end app will be built and packaged into the omod  as part of the maven build 
