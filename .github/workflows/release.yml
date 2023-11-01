@@ -6,7 +6,7 @@ on:
       branch:
         description: "The branch to checkout when cutting the release."
         required: true
-        default: "develop"
+        default: "main"
       releaseVersion:
         description: "Default version to use when preparing a release."
         required: true
@@ -26,11 +26,19 @@ jobs:
         with: 
           ref: ${{ github.event.inputs.branch }}
 
-      - name: Set up JDK 8
+      - name: Setup JDK 8
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
           java-version: '8'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14' 
+
+      - name: Setup pnpm
+        run: npm install -g pnpm@7
 
       - name: Build and Test
         run: mvn --batch-mode --update-snapshots clean package
@@ -41,7 +49,7 @@ jobs:
           git config user.name "GitHub Actions"
       
       - name: Perform Release
-        run: mvn release:prepare release:perform -B -s .maven-settings.xml -DreleaseVersion=${{ github.event.inputs.releaseVersion }} -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
+        run: mvn release:prepare release:perform -B -s .maven-settings.xml -DreleaseVersion=${{ github.event.inputs.releaseVersion }} -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }} -Darguments="-Dmaven.javadoc.skip=true"
         env:
           MAVEN_REPO_USERNAME: ${{ secrets.MAVEN_REPO_USERNAME }}
           MAVEN_REPO_PASSWORD: ${{ secrets.MAVEN_REPO_PASSWORD }}
