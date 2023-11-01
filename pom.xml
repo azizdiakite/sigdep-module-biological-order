@@ -118,4 +118,16 @@
 	<properties>
 		<openmrsPlatformVersion>2.3.1</openmrsPlatformVersion>
 	</properties>
+	<distributionManagement>
+		<repository>
+          <id>uwdigi-repo-central</id>
+          <name>libs-release</name>
+          <url>https://packages.uwdigi.org/artifactory/libs-release</url>
+        </repository>
+		<snapshotRepository>
+          <id>uwdigi-repo-snapshots</id>
+          <name>libs-snapshot</name>
+          <url>https://packages.uwdigi.org/artifactory/libs-snapshot</url>
+        </snapshotRepository>
+	</distributionManagement>
 </project>
