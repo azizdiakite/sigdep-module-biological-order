@@ -55,6 +55,7 @@ export interface EncounterForm {
   encounterType: string;
   encounterProviders: EncounterProviderForm[];
   uuid?: string;
+  form?: string;
 }
 
 export const ENCOUNTER_INITIAL_VALUES: EncounterForm = {
@@ -68,9 +69,7 @@ export const ENCOUNTER_INITIAL_VALUES: EncounterForm = {
 };
 
 export const encounterProviderSchema = Joi.object<EncounterProviderForm>({
-  provider: Joi.string()
-    .required()
-    .messages({ 'string.empty': 'Ce champ est requis' }),
+  provider: Joi.optional(),
   encounterRole: Joi.string()
     .required()
     .messages({ 'string.empty': 'Ce champ est requis' }),

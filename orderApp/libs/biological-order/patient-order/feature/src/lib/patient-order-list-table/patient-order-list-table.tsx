@@ -46,13 +46,13 @@ const cols: ColumnDef<Encounter>[] = [
     header: 'Motif de la demande',
     accessorFn: (data) => data.obs.find((o) => o.concept.uuid === Concepts.REASON_FOR_VIRAL_LOAD_REQUEST),
     cell: ({ getValue }) => (
-      <Text size={'sm'}>{getValue<string>() && getValue<Obs>().display}</Text>
+      <Text size={'sm'}>{getValue<string>() && getValue<Obs>().display.split(":",2)[1]}</Text>
     ),
   },
   {
     id: 'status',
     header: 'Statut de la demande',
-    accessorFn: (data) => data.obs.find((o) => o.concept.uuid === Concepts.HIV_VIRAL_LOAD_TEST)?.value?"Complété" :"En cours",
+    accessorFn: (data) => data.obs.find((o) => o.concept.uuid === Concepts.HIV_VIRAL_LOAD_TEST)?.value?"Réalisé" :"En cours",
     // cell: ({ getValue }) => (
     //   <Text size={'sm'}>{ getValue<Obs>().value?"Completed":"In Progress" }</Text>
     // ),

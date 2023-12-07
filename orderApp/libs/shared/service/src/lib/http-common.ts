@@ -23,3 +23,4 @@ export const fhirApi = axios.create({
     // Authorization: 'Basic ' + window.btoa('admin:Dppeis@pnls_16'),
   },
 });
+//7707/YF/14/01695 : tranferer

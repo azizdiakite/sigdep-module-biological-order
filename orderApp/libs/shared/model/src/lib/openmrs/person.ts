@@ -58,6 +58,7 @@ export interface Person {
   birthdate: Date;
   birthdateEstimated?: boolean;
   age: number;
+  dead?: boolean;
   names: PersonName[];
   preferredName?: PersonName;
   addresses: PersonAddress[];

@@ -28,6 +28,7 @@ export interface Patient {
   person: Person;
   identifiers: PatientIdentifier[];
   patientIdentifier?: PatientIdentifier;
+  transfered?: string;
   uuid: string;
 }
 

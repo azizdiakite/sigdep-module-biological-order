@@ -21,10 +21,14 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptMap;
 import org.openmrs.ConceptNumeric;
+import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
-
+import org.openmrs.event.EventListener;
 import org.openmrs.module.BaseModuleActivator;
+import org.openmrs.module.DaemonToken;
+import org.openmrs.event.Event;
+import org.openmrs.event.Event.Action;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
@@ -33,12 +37,19 @@ public class BiologicalOrderActivator extends BaseModuleActivator {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
+	private EventListener eventListener;
+	
+	private DaemonToken daemonToken;
+	
 	/**
 	 * @see #started()
 	 */
 	public void started() {
 		log.info("Started BiologicalOrder");
+		System.out.println("Started BiologicalOrder:2");
 		fixNumericConcepts();
+		eventListener = new OrderResultEventListener(daemonToken);
+		Event.subscribe(Obs.class, Action.CREATED.name(), eventListener);
 	}
 	
 	/**
@@ -46,6 +57,10 @@ public class BiologicalOrderActivator extends BaseModuleActivator {
 	 */
 	public void shutdown() {
 		log.info("Shutdown BiologicalOrder");
+		System.out.println("Shutdown BiologicalOrder:2");
+		if (eventListener != null) {
+			Event.unsubscribe(Obs.class, Action.CREATED, eventListener);
+		}
 	}
 	
 	// TO DO . we should fix the metadata issue from OCL or the DB  ie some Numeric concepts have no Concept Numeric metadata 

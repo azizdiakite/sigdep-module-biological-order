@@ -6,6 +6,7 @@ import {
   Paper,
   Select,
   Text,
+  Alert
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useInputState } from '@mantine/hooks';
@@ -19,6 +20,7 @@ import {
   useFindOnePatient,
 } from '@spbogui-openmrs/shared/ui';
 import {
+  Concepts,
   customEncounterParams,
   EncounterType,
 } from '@spbogui-openmrs/shared/utils';
@@ -27,6 +29,8 @@ import invariant from 'invariant';
 import { Link, Route, Routes, useParams } from 'react-router-dom';
 import PatientOrderListTable from './patient-order-list-table/patient-order-list-table';
 import { useEffect } from 'react';
+import dayjs from 'dayjs';
+import ReactToPrint from "react-to-print";
 
 /* eslint-disable-next-line */
 export interface BiologicalOrderPatientOrderFeatureProps {}
@@ -44,7 +48,13 @@ export function BiologicalOrderPatientOrderFeature(
 
   const { patient } = useFindOnePatient(patientId, 'full', true);
   //const {encounters } = useFindAllEncounters(EncounterType.REQUEST_EXAM ,"2010-01-01" ,"9999-12-12" ,customEncounterParams ,'100' ,true)
-  const {encounter } = useFindFilteredEncounter(patientId ,EncounterType.REQUEST_EXAM ,customEncounterParams ,'' ,'' ,true)
+  const {encounter } = useFindFilteredEncounter(patientId ,EncounterType.REQUEST_EXAM ,customEncounterParams ,'' ,'' ,true);
+  const lastResult = encounter[0]?.obs.find((o) => o.concept.uuid === Concepts.HIV_VIRAL_LOAD_TEST);
+  const lastResultIsAvailable = (lastResult !== undefined && encounter.length > 0) || (lastResult === undefined && encounter.length === 0);
+  //const lastResultIsAvailable = true;
+  
+
+
   // const { encounter: latestCd4 } = useFindFilteredEncounter(
   //   patientId,
   //   EncounterType.BIOLOGICAL_EXAM,
@@ -71,8 +81,8 @@ export function BiologicalOrderPatientOrderFeature(
   //   '1',
   //   true
   // );
-
-  return (
+ 
+  return (  
     <Paper
       withBorder
       m={'xs'}
@@ -101,34 +111,45 @@ export function BiologicalOrderPatientOrderFeature(
             {patient && patient.identifiers[0].identifier}
           </Text>
         </Group>
-        <Group>
-          {/* <Select data={[]} /> */}
-          <DatePicker
-            icon={<IconCalendar />}
-            placeholder={'Date de demande'}
-            onChange={setRequestDate}
-            inputFormat={'DD/MM/YYYY'}
-            locale={'fr'}
-          />
-          <Link to={'form'}>
-            <Button
-              leftIcon={<IconPlus />}
-              color={'cyan'}
-              disabled={!requestDate}
-            >
-              Nouvelle demande
-            </Button>
-          </Link>
-          <Link to={'print'}>
-            <Button
-              leftIcon={<IconPrinter />}
-              color={'cyan'}
-              disabled={!requestDate}
-            >
-              Imprimer fiche de demande
-            </Button>
-          </Link>
-        </Group>
+
+        {lastResultIsAvailable ? (
+                <Group>
+                {/* <Select data={[]} /> */}
+                <DatePicker
+                  icon={<IconCalendar />}
+                  placeholder={'Date de demande'}
+                  onChange={setRequestDate}
+                  inputFormat={'DD/MM/YYYY'}
+                  locale={'fr'}
+                  maxDate={new Date()}
+                  minDate={dayjs(new Date()).subtract(7, 'day').toDate()}/>
+                <Link to={'form'}>
+                  <Button
+                    leftIcon={<IconPlus />}
+                    color={'cyan'}
+                    disabled={!requestDate}
+                  >
+                    Nouvelle demande
+                  </Button>
+                </Link>
+                <ReactToPrint
+                trigger={() =>  <Button
+                  leftIcon={<IconPrinter />}
+                  color={'cyan'}
+                  disabled={!requestDate}
+                >
+                  Imprimer fiche de demande
+                </Button>}
+                content={() =>  document.getElementById('print')!
+              }
+              />
+              </Group>
+        ): ( 
+           <Alert color="red" title="ATTENTION !!!!">
+            Une nouvelle demande ne peut etre effectuée car le resultat precedent n'est pas encore disponible...
+         </Alert>)}
+  
+
       </Group>
       <Divider />
       <Grid>

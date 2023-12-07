@@ -14,10 +14,11 @@ export interface OrderFormType {
   order: OrderForm;
   pregnancyStatus?: string;
   currentlyBreastfeedingChild?: string;
-  
+  providerNumber?: string,
+  providerEmail?: string,
   hivType: string;
   isOnTreatment?: string;
-  arvInitialYear?: string;
+  arvInitialYear?: Date;
   regimeLine?: string;
   regime?: string;
   requestReason: string;
@@ -30,12 +31,21 @@ export interface OrderFormType {
   latestCd4Date?: Date;
   hasViralLoad?: string;
   latestViralLoad?: string;
+  latestViralLoadLaboratory?: string;
   latestViralLoadDate?: Date;
   requestDate?: Date;
+  encounterTime?: String;
   collectionType: string;
  // otherRegimeLine?: string;
 }
 
+export const ENCOUNTER_INITIAL_VALUE_FORM: EncounterForm =  {
+  ...ENCOUNTER_INITIAL_VALUES,
+  encounterProviders: [
+    { encounterRole: EncounterRole.CLINICIAN, provider: '' },
+    { encounterRole: EncounterRole.COLLECTOR, provider: '' },
+  ],
+};
 
 export const orderFormSchema = Joi.object<OrderFormType>({
   encounter: encounterSchema,
@@ -45,40 +55,46 @@ export const orderFormSchema = Joi.object<OrderFormType>({
   arvInitialYear: Joi.optional(),
   regimeLine: Joi.optional(),
   regime: Joi.optional(),
-  requestReason: Joi.string()
-    .required()
-    .messages({ 'string.empty': 'Le motif de la demande de CV est requis' }),
+  requestReason: Joi.optional(),
+  providerNumber: Joi.optional(),
+  providerEmail: Joi.optional(),
   otherCVReason: Joi.optional(),  
   pregnancyStatus : Joi.optional(),
   currentlyBreastfeedingChild: Joi.optional(),
-  initialCd4Absolute: Joi.number().required().messages({
-    'string.empty': 'La valeur absolue de CD4 initial est requise',
-  }),
-  initialCd4Percentage: Joi.number()
-    .required()
-    .messages({ 'string.empty': 'Le pourcentage de CD4 initial est requis' }),
-  
-  initialCd4Date: Joi.date()
-    .required()
-    .messages({ 'any.required': 'La date de CD4 initial est requise' }),
+  initialCd4Absolute: Joi.optional(),
+  initialCd4Percentage: Joi.optional(),
+  initialCd4Date: Joi.optional(),
   latestCd4Absolute: Joi.number().allow('').optional(),
   latestCd4Percentage: Joi.number().allow('').optional(),
   latestCd4Date: Joi.optional(),
-  //hasViralLoad: Joi.optional(),
-  hasViralLoad: Joi.string().valid(Concepts.YES, Concepts.NO).required(),
+  hasViralLoad: Joi.optional(),
+  
+  //hasViralLoad: Joi.string().valid(Concepts.YES, Concepts.NO).required(),
+ /* latestViralLoadLaboratory :Joi.optional().when('hasViralLoad', {
+    is: Concepts.YES,
+    then: Joi.string().required().messages({ 'string.empty': 'Le laboratoire est requis' }),
+    otherwise: Joi.optional()
+  }),*/
+
+  latestViralLoadLaboratory :Joi.optional(),
+
   latestViralLoad: Joi.optional().when('hasViralLoad', {
     is: Concepts.YES,
-    then: Joi.number().required(),
+    then: Joi.string()
+      .required()
+      .messages({'any.required': 'La valeur est requise'}),
     otherwise: Joi.optional()
   }),
+
   latestViralLoadDate: Joi.optional(),
   requestDate: Joi.date()
     .required()
     .messages({ 'any.required': 'La date de la demande est requise' }),
   collectionType: Joi.string()
     .required()
-    .messages({ 'string.empty': 'Le type de prélèvement est requis' })
+    .messages({ 'string.empty': 'Le type de prélèvement est requis' }),
  // otherRegimeLine: Joi.optional(),
+ encounterTime : Joi.optional()
 });
 
 
@@ -110,12 +126,16 @@ export const ORDER_FORM_INITIAL_VALUE: OrderFormType =  {
   hasViralLoad: '',
   latestViralLoad: '',
   latestViralLoadDate: undefined,
-  arvInitialYear: '',
+  latestViralLoadLaboratory: '',
+  arvInitialYear: undefined,
   requestDate: undefined,
+  encounterTime: undefined,
   collectionType: '',
   regimeLine: '',
   //otherRegimeLine: '',
   regime: '',
-  otherCVReason : ""
+  otherCVReason : "",
+  providerNumber: '',
+  providerEmail: '',
 };
 
