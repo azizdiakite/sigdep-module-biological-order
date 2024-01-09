@@ -54,4 +54,199 @@
 <!--        </sql>-->
 <!--    </changeSet>-->
  
+    <changeSet id="biologicalorder-2023-12-12-10-50" author="azmac">
+        <!-- Insertion 1: Last viral load value -->
+        <preConditions onFail="CONTINUE">
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM openmrs.concept WHERE uuid = 'CI0050030AAAAAAAAAAAAAAAAAAAAAAAAAAA'</sqlCheck>
+        </preConditions>
+        <insert tableName="concept" schemaName="openmrs">
+            <column name="concept_id" valueNumeric="NULL"/>
+            <column name="datatype_id" valueNumeric="3"/>
+            <column name="class_id" valueNumeric="8"/>
+            <column name="short_name" value="Last viral load value"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="date_created" valueDate="NOW()"/>
+            <column name="uuid" value="CI0050030AAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+        <insert tableName="concept_name" schemaName="openmrs">
+            <column name="concept_id" valueComputed="(SELECT concept_id FROM openmrs.concept WHERE uuid = 'CI0050030AAAAAAAAAAAAAAAAAAAAAAAAAAA')"/>
+            <column name="name" value="Dernière valeur de la charge virale"/>
+            <column name="date_created" valueDate="NOW()"/>
+            <column name="concept_name_type" value="FULLY_SPECIFIED"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="locale" value="fr"/>
+            <column name="locale_preferred" valueNumeric="1"/>
+            <column name="voided" valueBoolean="false"/>
+            <column name="uuid" value="CI0050030FRAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+        <insert tableName="concept_name" schemaName="openmrs">
+            <column name="concept_id" valueComputed="(SELECT concept_id FROM openmrs.concept WHERE uuid = 'CI0050030AAAAAAAAAAAAAAAAAAAAAAAAAAB')"/>
+            <column name="name" value="Last viral load value"/>
+            <column name="date_created" valueDate="NOW()"/>
+            <column name="concept_name_type" value="FULLY_SPECIFIED"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="locale" value="en"/>
+            <column name="locale_preferred" valueNumeric="0"/>
+            <column name="voided" valueBoolean="false"/>
+            <column name="uuid" value="CI0050030ENAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+	</changeSet>
+
+    <changeSet id="biologicalorder-2023-12-12-11-51" author="azmac">
+        <!-- Insertion 2: Last viral load laboratory -->
+        <preConditions onFail="CONTINUE">
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM openmrs.concept WHERE uuid = 'CI0050020AAAAAAAAAAAAAAAAAAAAAAAAAAA'</sqlCheck>
+        </preConditions >
+        <insert tableName="concept" schemaName="openmrs">
+            <column name="concept_id" valueNumeric="NULL"/>
+            <column name="retired" valueBoolean="false"/>     
+            <column name="datatype_id" valueNumeric="3"/>
+            <column name="class_id" valueNumeric="8"/>
+            <column name="is_set" valueNumeric="0"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="date_created" valueDate="NOW()"/>
+            <column name="uuid" value="CI0050020AAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+        <insert tableName="concept_name" schemaName="openmrs">
+            <column name="concept_id" valueComputed="(SELECT concept_id FROM openmrs.concept WHERE uuid = 'CI0050020AAAAAAAAAAAAAAAAAAAAAAAAAAA')"/>
+            <column name="name" value="Dernier laboratoire de charge virale"/>
+            <column name="date_created" valueDate="NOW()"/>
+            <column name="concept_name_type" value="FULLY_SPECIFIED"/>
+            <column name="creator" valueNumeric="1"/>
+           <column name="locale" value="fr"/>
+            <column name="locale_preferred" valueNumeric="1"/>
+            <column name="voided" valueBoolean="false"/>
+            <column name="uuid" value="CI0050020FRAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+         <insert tableName="concept_name" schemaName="openmrs">
+            <column name="concept_id" valueComputed="(SELECT concept_id FROM openmrs.concept WHERE uuid = 'CI0050020AAAAAAAAAAAAAAAAAAAAAAAAAAA')"/>
+            <column name="name" value="Last viral load laboratory"/>
+            <column name="date_created" valueDate="NOW()"/>
+            <column name="concept_name_type" value="FULLY_SPECIFIED"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="locale" value="en"/>
+            <column name="locale_preferred" valueNumeric="0"/>
+            <column name="voided" valueBoolean="false"/>
+            <column name="uuid" value="CI0050020ENAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="biologicalorder-2023-12-12-12-52" author="azmac">
+		<!-- Insertion 3 : PSC-->
+        <preConditions onFail="CONTINUE">
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM concept WHERE uuid = 'CI0050010AAAAAAAAAAAAAAAAAAAAAAAAAAA'</sqlCheck>
+        </preConditions>
+        <insert tableName="concept"  schemaName="openmrs">
+            <column name="concept_id" valueNumeric="NULL"/>
+            <column name="retired" valueBoolean="false"/>     
+            <column name="datatype_id" valueNumeric="4"/>
+            <column name="class_id" valueNumeric="8"/>
+            <column name="is_set" valueNumeric="0"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="date_created" valueDate="NOW()"/>
+            <column name="uuid" value="CI0050010AAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+        <insert tableName="concept_name"  schemaName="openmrs">
+            <column name="concept_id" valueComputed="(SELECT concept_id FROM openmrs.concept WHERE uuid = 'CI0050010AAAAAAAAAAAAAAAAAAAAAAAAAAA')"/>
+            <column name="name" value="PSC"/>
+           <column name="date_created" valueDate="NOW()"/>
+            <column name="concept_name_type" value="FULLY_SPECIFIED"/>
+            <column name="creator" valueNumeric="1"/>
+           <column name="locale" value="fr"/>
+            <column name="locale_preferred" valueNumeric="1"/>
+            <column name="voided" valueBoolean="false"/>
+            <column name="uuid" value="CI0050010FRAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+         <insert tableName="concept_name"  schemaName="openmrs">
+            <column name="concept_id" valueComputed="(SELECT concept_id FROM openmrs.concept WHERE uuid = 'CI0050010AAAAAAAAAAAAAAAAAAAAAAAAAAA')"/>
+            <column name="name" value="PSC"/>
+           <column name="date_created" valueDate="NOW()"/>
+            <column name="concept_name_type" value="FULLY_SPECIFIED"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="locale" value="en"/>
+            <column name="locale_preferred" valueNumeric="0"/>
+            <column name="voided" valueBoolean="false"/>
+            <column name="uuid" value="CI0050010ENAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+    </changeSet>
+
+	<changeSet id="biologicalorder-2023-12-12-13-53" author="azmac">
+        <!-- Insertion 4: Clinician phone number -->
+        <preConditions onFail="CONTINUE">
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM concept WHERE uuid = 'CI0050040AAAAAAAAAAAAAAAAAAAAAAAAAAA'</sqlCheck>
+        </preConditions>
+         <insert tableName="concept"  schemaName="openmrs">
+            <column name="concept_id" valueNumeric="NULL"/>
+            <column name="retired" valueBoolean="false"/>    
+            <column name="datatype_id" valueNumeric="3"/>
+            <column name="class_id" valueNumeric="8"/>
+            <column name="is_set" valueNumeric="0"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="date_created" valueDate="NOW()"/>
+            <column name="uuid" value="CI0050040AAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+        <insert tableName="concept_name"  schemaName="openmrs">
+            <column name="concept_id" valueComputed="(SELECT concept_id FROM openmrs.concept WHERE uuid = 'CI0050040AAAAAAAAAAAAAAAAAAAAAAAAAAA')"/>
+            <column name="name" value="Numéro de téléphone du clinicien"/>
+            <column name="date_created" valueDate="NOW()"/>
+            <column name="concept_name_type" value="FULLY_SPECIFIED"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="locale" value="fr"/>
+            <column name="locale_preferred" valueNumeric="1"/>
+            <column name="voided" valueBoolean="false"/>
+            <column name="uuid" value="CI0050040FRAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+        <insert tableName="concept_name"  schemaName="openmrs">
+            <column name="concept_id" valueComputed="(SELECT concept_id FROM openmrs.concept WHERE uuid = 'CI0050040AAAAAAAAAAAAAAAAAAAAAAAAAAA')"/>
+            <column name="name" value="Clinician phone number"/>
+            <column name="date_created" valueDate="NOW()"/>
+            <column name="concept_name_type" value="FULLY_SPECIFIED"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="locale" value="en"/>
+            <column name="locale_preferred" valueNumeric="0"/>
+            <column name="voided" valueBoolean="false"/>
+            <column name="uuid" value="CI0050040ENAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+   </changeSet>
+
+    <changeSet id="biologicalorder-2023-12-12-14-54" author="azmac">
+		 <!-- Insertion 5 : Clinician Email-->
+        <preConditions onFail="CONTINUE">
+                <sqlCheck expectedResult="0">SELECT COUNT(*) FROM concept WHERE uuid = 'CI0050050AAAAAAAAAAAAAAAAAAAAAAAAAAA'</sqlCheck>
+        </preConditions>
+
+        <insert tableName="concept"  schemaName="openmrs">
+            <column name="concept_id" valueNumeric="NULL"/>
+            <column name="retired" valueBoolean="false"/>     
+            <column name="datatype_id" valueNumeric="3"/>
+            <column name="class_id" valueNumeric="8"/>
+            <column name="is_set" valueNumeric="0"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="date_created" valueDate="NOW()"/>
+            <column name="uuid" value="CI0050050AAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+        <insert tableName="concept_name"  schemaName="openmrs">
+            <column name="concept_id" valueComputed="(SELECT concept_id FROM openmrs.concept WHERE uuid = 'CI0050050AAAAAAAAAAAAAAAAAAAAAAAAAAA')"/>
+            <column name="name" value="E-mail du clinicien"/>
+            <column name="date_created" valueDate="NOW()"/>
+            <column name="concept_name_type" value="FULLY_SPECIFIED"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="locale" value="fr"/>
+            <column name="locale_preferred" valueNumeric="1"/>
+            <column name="voided" valueBoolean="false"/>
+            <column name="uuid" value="CI0050050FRAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+        <insert tableName="concept_name"  schemaName="openmrs">
+            <column name="concept_id" valueComputed="(SELECT concept_id FROM openmrs.concept WHERE uuid = 'CI0050050AAAAAAAAAAAAAAAAAAAAAAAAAAA')"/>
+            <column name="name" value="Clinician Email"/>
+            <column name="date_created" valueDate="NOW()"/>
+            <column name="concept_name_type" value="FULLY_SPECIFIED"/>
+            <column name="creator" valueNumeric="1"/>
+            <column name="locale" value="en"/>
+            <column name="locale_preferred" valueNumeric="0"/>
+            <column name="voided" valueBoolean="false"/>
+            <column name="uuid" value="CI0050050ENAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>

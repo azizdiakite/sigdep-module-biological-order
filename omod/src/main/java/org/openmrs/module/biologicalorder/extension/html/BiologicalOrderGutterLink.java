@@ -8,7 +8,7 @@ public class BiologicalOrderGutterLink extends LinkExt {
 	
 	@Override
 	public String getLabel() {
-		return Context.getMessageSourceService().getMessage("Demande d'examen cv");
+		return Context.getMessageSourceService().getMessage("Demande d'examen");
 	}
 	
 	@Override

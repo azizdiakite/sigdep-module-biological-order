@@ -27,15 +27,21 @@ import org.openmrs.api.context.Context;
 import org.openmrs.event.EventListener;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.DaemonToken;
+import org.openmrs.module.DaemonTokenAware;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.openmrs.event.Event;
 import org.openmrs.event.Event.Action;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
  */
-public class BiologicalOrderActivator extends BaseModuleActivator {
+public class BiologicalOrderActivator extends BaseModuleActivator implements ApplicationContextAware, DaemonTokenAware {
 	
 	private Log log = LogFactory.getLog(this.getClass());
+	
+	private static ApplicationContext applicationContext;
 	
 	private EventListener eventListener;
 	
@@ -47,9 +53,10 @@ public class BiologicalOrderActivator extends BaseModuleActivator {
 	public void started() {
 		log.info("Started BiologicalOrder");
 		System.out.println("Started BiologicalOrder:2");
+		System.out.println("daemon Token :::::" + daemonToken);
 		fixNumericConcepts();
 		eventListener = new OrderResultEventListener(daemonToken);
-		Event.subscribe(Obs.class, Action.CREATED.name(), eventListener);
+		Event.subscribe(Obs.class, Action.CREATED.name().toString(), eventListener);
 	}
 	
 	/**
@@ -91,5 +98,15 @@ public class BiologicalOrderActivator extends BaseModuleActivator {
 				conceptService.saveConcept(newCn);
 			}
 		});
+	}
+	
+	@Override
+	public void setDaemonToken(DaemonToken token) {
+		this.daemonToken = token;
+	}
+	
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 }
