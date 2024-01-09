@@ -1,8 +1,8 @@
 import { Encounter, Obs } from '@spbogui-openmrs/shared/model';
 import { ColumnDef } from '@tanstack/react-table';
-import { Button, Group, Text } from '@mantine/core';
+import { Button, Group, Text,Tooltip } from '@mantine/core';
 import dayjs from 'dayjs';
-import { IconEye } from '@tabler/icons';
+import { IconChecks, IconClockHour7, IconEye, IconFileInvoice } from '@tabler/icons';
 import { Link } from 'react-router-dom';
 import { useMemo } from 'react';
 import { CustomTable } from '@spbogui-openmrs/shared/ui';
@@ -24,11 +24,11 @@ const cols: ColumnDef<Encounter>[] = [
     header: 'patient',
     accessorFn: (data) => data.patient.uuid,
   },
-  {
+ /* {
     id: 'names',
-    header: 'Name',
+    header: 'Nom',
     accessorFn: (data) => data.patient.person.names[0].givenName + " "+  data.patient.person.names[0].familyName,
-  },
+  },*/
   {
     id: 'orderDate',
     header: 'Date de prélèvement',
@@ -52,10 +52,16 @@ const cols: ColumnDef<Encounter>[] = [
   {
     id: 'status',
     header: 'Statut de la demande',
-    accessorFn: (data) => data.obs.find((o) => o.concept.uuid === Concepts.HIV_VIRAL_LOAD_TEST)?.value?"Réalisé" :"En cours",
-    // cell: ({ getValue }) => (
-    //   <Text size={'sm'}>{ getValue<Obs>().value?"Completed":"In Progress" }</Text>
-    // ),
+    accessorFn: (data) => data.obs.find((o) => o.concept.uuid === Concepts.HIV_VIRAL_LOAD_TEST)?.value?"OK" :"NO",
+    cell: ({ getValue }) => {
+      const value = getValue<string>();
+      if (value === "OK") {
+        return <Text display={'flex'} > Réalisé  <IconChecks color={'green'} /> </Text>;
+      } else {
+        return <Text display={'flex'}> En cours <IconClockHour7 color={'orange'} /> </Text>;
+      }
+    }
+    
   },
   // {
   //   id: 'statusDate',
@@ -66,23 +72,46 @@ const cols: ColumnDef<Encounter>[] = [
   //   ),
   // },
   {
-    id: 'menu',
+    id: 'preview',
     header: '',
+    accessorFn: (data) => data.obs,
     cell: (data) => (
       <Group spacing={0} position="right">
+        <Tooltip label='Consulter la demande'>
         <Link
           style={{ textDecoration: 'none' }}
           to={`/patient-order/${data.row.getValue(
             'patient'
-          )}/result/${data.row.getValue('uuid')}`}
+          )}/display/${data.row.getValue('uuid')}`}
         >
-          <Button color={'green.7'}>
-            <IconEye />
+          <Button color={'blue.7'}>
+            <IconFileInvoice />
           </Button>
         </Link>
-      </Group>
+      </Tooltip>
+    </Group>
     ),
   },
+  {
+    id: 'menu',
+    header: '',
+    cell: (data) => (
+      <Group spacing={0} position="left">
+          <Tooltip label='Résultat de la demande'>
+          <Link
+            style={{ textDecoration: 'none' }}
+            to={`/patient-order/${data.row.getValue(
+              'patient'
+            )}/result/${data.row.getValue('uuid')}`}
+          >
+            <Button color={'green.7'}>
+              <IconEye />
+            </Button>
+          </Link>
+        </Tooltip>
+      </Group>
+    ),
+  }
 ];
 
 export function PatientOrderListTable({ orders }: PatientOrderListTableProps) {
@@ -103,5 +132,4 @@ export function PatientOrderListTable({ orders }: PatientOrderListTableProps) {
     </div>
   );
 }
-
 export default PatientOrderListTable;

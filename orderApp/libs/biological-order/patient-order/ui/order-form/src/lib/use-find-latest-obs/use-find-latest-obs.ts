@@ -86,6 +86,15 @@ export const useFindLatestObs = (
     const { obs: lastViralLoadObs, isLoading: loadingLastViralLoadObs} = useFindObs(patient,Concepts.LAST_VIRAL_LOAD, ``, view);
     const lastViralLoad = lastViralLoadObs.length === 1 ? lastViralLoadObs[0].value: undefined;
 
+    // Last viral load Lab
+    const { obs: lastViralLaboratoryLoadObs, isLoading: loadingLastViralLaboratoryLoadObs} = useFindObs(patient,Concepts.LAST_VIRAL_LOAD_LABORATORY, ``, view);
+    const lastViralLaboratoryLoad = lastViralLaboratoryLoadObs.length === 1 ? lastViralLaboratoryLoadObs[0].value: undefined;
+
+
+    // Last viral load date
+    const { obs: lastViralDateLoadObs, isLoading: loadingLastViralDateLoadObs} = useFindObs(patient,Concepts.LAST_VIRAL_LOAD_DATE, ``, view);
+    const lastViralDateLoad = lastViralDateLoadObs.length === 1 ? lastViralDateLoadObs[0].value: undefined;
+     
     // Hiv type
     const { obs: hivTypeFormObs, isLoading: loadingHivTypeFormObs} = useFindObs(patient,Concepts.HIV_TYPE_INIT_FORM, ``, view);
     const hivTypeForm = hivTypeFormObs.length === 1 ? hivTypeFormObs[0].value: undefined;
@@ -106,9 +115,9 @@ export const useFindLatestObs = (
      const { obs: initialCd4PercentageFormObs, isLoading: loadingInitialCd4PercentageFormObs} = useFindObs(patient, Concepts.INNITIAL_CD4_PERCENT_INIT_FORM, ``, view);
      const initialCd4PercentageForm = initialCd4PercentageFormObs.length === 1 ? initialCd4PercentageFormObs[0].value: undefined;
 
-      // initial C4 Date
-      const { obs: initialCd4DateFormObs, isLoading: loadingInitialCd4DateFormObs} = useFindObs(patient, Concepts.INNITIAL_CD4_DATE_INIT_FORM, ``, view);
-      const initialCd4DateForm = initialCd4DateFormObs.length === 1 ? initialCd4DateFormObs[0].value: undefined;      
+    // initial C4 Date
+    const { obs: initialCd4DateFormObs, isLoading: loadingInitialCd4DateFormObs} = useFindObs(patient, Concepts.INNITIAL_CD4_DATE_INIT_FORM, ``, view);
+    const initialCd4DateForm = initialCd4DateFormObs.length === 1 ? initialCd4DateFormObs[0].value: undefined;      
      
      // Treatment Line
      const { obs: treatmentLineObs, isLoading: loadingTreatmentLineObs} = useFindObs(patient, Concepts.TREATMENT_LINE_INIT_FORM, ``, view);
@@ -122,7 +131,14 @@ export const useFindLatestObs = (
     const { obs: transferedObs, isLoading: loadingTransferedObs} = useFindObs(patient,Concepts.TRANSFERERD, ``, view);
     const transfered = transferedObs.length === 1 ? transferedObs[0].value: undefined; 
 
- 
+    const { obs: antiretroviralPlanObs, isLoading: loadingAntiretroviralPlanObs} = useFindObs(patient, Concepts.ANTIRETROVIRAL_PLAN, ``, view);
+    const antiretroviralPlan = antiretroviralPlanObs.length === 1 ? antiretroviralPlanObs[0].value: undefined; 
+   // console.log({antiretroviralPlan : antiretroviralPlan});
+  
+   const { obs: hivViralLoadTestObs, isLoading: loadingHivViralLoadTestObs} = useFindObs(patient, Concepts.HIV_VIRAL_LOAD_TEST, ``, view);
+   const hivViralLoadTest = hivViralLoadTestObs.length === 1 ? hivViralLoadTestObs[0].value: undefined; 
+  //console.log({hivViralLoadTest: hivViralLoadTest});
+    
 
 
   const loading =
@@ -144,7 +160,11 @@ export const useFindLatestObs = (
     loadingTreatmentLineObs &&
     loadingInitialCd4DateFormObs && 
     loadingArvRegimenObs && 
-    loadingTransferedObs
+    loadingTransferedObs && 
+    loadingAntiretroviralPlanObs && 
+    loadingLastViralLaboratoryLoadObs && 
+    loadingLastViralDateLoadObs &&
+    loadingHivViralLoadTestObs
 
   return {
     pregnancyStatus,
@@ -166,6 +186,10 @@ export const useFindLatestObs = (
     initialCd4DateForm,
     arvRegimen,
     loading,
-    transfered
+    transfered,
+    antiretroviralPlan,
+    lastViralLaboratoryLoad,
+    lastViralDateLoad,
+    hivViralLoadTest
   };
 };

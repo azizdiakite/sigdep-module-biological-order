@@ -37,14 +37,9 @@ export function BiologicalOrderPatientOrderUiOrderResult(
   const form = ENCOUNTER_INITIAL_VALUE_FORM;
 
   const {encounter} = useFindEncounter(requestId ,customEncounterParams ,true);
-  const { saveEncounter } = useSaveEncounter();
 
   const obs = encounter?.obs.find((o) => o.concept.uuid === Concepts.HIV_VIRAL_LOAD_TEST);
-  const typeVih = encounter?.obs.find((o) => o.concept.uuid === Concepts.TYPE_VIH); 
-  const prefixToRemove = "Type de VIH: ";
-  form.patient = patientId;
-  form.encounterType = EncounterType.BIOLOGICAL_EXAM;
-  form.form = "2db4f47f-8d19-4740-acea-fc8feb585b7a";
+  const hivType = encounter?.obs.find((o) => o.concept.uuid === Concepts.TYPE_VIH); 
  
 /*  useEffect(() => {
       // 👇️ only runs once   
@@ -128,8 +123,8 @@ export function BiologicalOrderPatientOrderUiOrderResult(
             <tbody>
               <tr>
                 <td>
-                  {typeVih
-                    ? typeVih.display.substring(prefixToRemove.length)
+                  {hivType
+                    ? hivType.display.split(":",2)[1]
                     : ""}
                 </td>
                 <td>{obs ? obs.value : ""}</td>

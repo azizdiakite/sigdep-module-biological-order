@@ -27,7 +27,7 @@ const cols: ColumnDef<Encounter>[] = [
   },
   {
     id: 'names',
-    header: 'Name',
+    header: 'Nom',
     accessorFn: (data) => data.patient.person.names[0].givenName + " "+  data.patient.person.names[0].familyName,
   },
   {

@@ -107,9 +107,10 @@ ObsInputProps) {
       // form.values[name] &&
       // form.values[name] !== '' &&
       // (
-      isChanged &&
+    //  isChanged &&
+    true
       // (type === 'checkbox' || type === 'radio' || type === 'date')) ||
-      form.values[name] !== innerValue
+      //form.values[name] !== innerValue
     ) {
       // console.log(form.values[name]);
 

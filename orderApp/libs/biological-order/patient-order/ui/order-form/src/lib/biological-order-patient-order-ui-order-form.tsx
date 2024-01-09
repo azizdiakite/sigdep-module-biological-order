@@ -64,6 +64,12 @@ export function BiologicalOrderPatientOrderUiOrderForm({
     initialCd4DateForm,
     arvRegimen,
     loading,
+    antiretroviralPlan,
+    hasViralLoad,
+    lastViralLoad,
+    lastViralLaboratoryLoad,
+    lastViralDateLoad,
+    hivViralLoadTest
   } = useFindLatestObs(
     patient ? patient.uuid : '',
     dayjs(requestDate).format('YYYY-MM-DD'),
@@ -95,9 +101,8 @@ export function BiologicalOrderPatientOrderUiOrderForm({
   };
 
   useEffect(() => {
-    if (!form.values.requestDate) {      
       form.values.requestDate = requestDate;    
-    }
+    
   }, [form, requestDate]);
 
   const loadValues = () => {
@@ -146,8 +151,8 @@ export function BiologicalOrderPatientOrderUiOrderForm({
         }
       }
 
-      if(isOntreatmentForm){
-        form.values.isOnTreatment = isOntreatmentForm.display === initFormValues.TREATMENT_YES ? 'true' : 'false' ;
+      if(antiretroviralPlan){        
+        form.values.isOnTreatment = antiretroviralPlan.uuid === Concepts.NONE ? 'false' : 'true' ;
       }
       
       if(arvRegimen){
@@ -166,8 +171,25 @@ export function BiologicalOrderPatientOrderUiOrderForm({
           form.values.regimeLine = Concepts.FIRST_TREATMENT_LINE
   
         } else {
-          form.values.regimeLine = Concepts.OTHER
+           form.values.regimeLine = Concepts.OTHER
         }
+      }
+       
+      if((hivViralLoadTest !== 0) && (hivViralLoadTest !== undefined)){
+
+        form.values.hasViralLoad = Concepts.YES;
+        form.values.latestViralLoad = hivViralLoadTest.toString();
+        
+        if(lastViralLaboratoryLoad){
+          form.values.latestViralLoadLaboratory = lastViralLaboratoryLoad;
+        }
+
+        if(lastViralDateLoad){
+          form.values.latestViralLoadDate = undefined; //new Date(lastViralDateLoad);
+        }
+      }else{
+       // form.values.hasViralLoad = Concepts.NO;
+        form.values.latestViralLoad = undefined;
       }
 
   }
@@ -193,6 +215,8 @@ export function BiologicalOrderPatientOrderUiOrderForm({
             onSuccess: (data) => {
               console.log('Saved successfully Encounter');
               if (data && data.uuid) {
+               // console.log({data: data});
+                
                 const order = form.values.order;
                 order.patient = data.patient.uuid;
                 order.encounter = data.uuid;
@@ -201,6 +225,8 @@ export function BiologicalOrderPatientOrderUiOrderForm({
                     e.encounterRole === EncounterRole.CLINICIAN
                 );
                 order.orderer = orderer ? orderer.provider : '';
+               // console.log({order: order});
+                
                 saveOrder(order, {
                   onSuccess: () => {
                     notification(

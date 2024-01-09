@@ -5,12 +5,14 @@ import axios from 'axios';
 // const sessionBasic = encryptStorage.getItem('auth');
 
 export const api = axios.create({
-  baseURL: '/openmrs/ws/rest/v1',
+ baseURL: '/openmrs/ws/rest/v1',
+ //baseURL: 'http://localhost:8080/openmrs/ws/rest/v1',
  // baseURL: 'http://35.85.179.171:8080/openmrs/ws/rest/v1',
+ // baseURL: 'http://dev.cihis.org:8080/openmrs/ws/rest/v1',
   headers: {
     'Content-type': 'application/json',
     'Access-Control-Allow-Origin': '*',
-    // Authorization: 'Basic ' + window.btoa('admin:Dppeis@pnls_16'),
+     Authorization: 'Basic ' + window.btoa('admin:Dppeis@pnls_16'),
   },
 });
 

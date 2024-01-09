@@ -11,11 +11,9 @@ import {
   Table,
   Text,
   useMantineTheme,
-  Alert,
-  TextInput
-
+  Alert
 } from '@mantine/core';
-import { DatePicker, TimeInput } from '@mantine/dates';
+import { DatePicker } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
 import { Patient } from '@spbogui-openmrs/shared/model';
 import { IconCalendar, IconCircle } from '@tabler/icons';
@@ -25,7 +23,6 @@ import { createStyles } from '@mantine/core';
 import { ObsInput } from '@spbogui-openmrs/shared/ui';
 import { Concepts } from '@spbogui-openmrs/shared/utils';
 import { openConfirmModal } from '@mantine/modals';
-import {   useNavigate } from 'react-router-dom';
 import { useFindLatestObs } from '../../use-find-latest-obs/use-find-latest-obs';
 
 export const styles = createStyles((theme) => ({
@@ -61,7 +58,27 @@ export function OrderForm({
   const { classes } = styles();
   const theme = useMantineTheme();
   const currentDate = new Date(); 
-  const navigate = useNavigate();
+  const futureDate =  new Date(dayjs(form.values.requestDate).format('YYYY-MM-DD'));
+  function compareDates(date1: Date, date2: Date): number {
+    const date1SansHeure = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
+    const date2SansHeure = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+    if (date1SansHeure < date2SansHeure) {
+      return -1; // date1 est avant date2
+    } else if (date1SansHeure > date2SansHeure) {
+      return 1; // date1 est après date2
+    } else {
+      return 0; // date1 et date2 sont égales
+    }
+  }
+
+  if(compareDates(futureDate, currentDate) == 0){
+    futureDate.setDate(new Date().getDate());
+  }else{
+    futureDate.setDate(futureDate.getDate());
+  }
+  const pastDate = new Date();
+  pastDate.setDate(currentDate.getDate() - 1);
+  
   const {
     transfered,
   } = useFindLatestObs(
@@ -109,7 +126,7 @@ export function OrderForm({
       }}>
           <Text size={'lg'} mb={'lg'} weight={'bold'} color={'cyan.6'}>
             DONNEES PATIENT
-             {/*{JSON.stringify(form.values)} */}
+             { /*JSON.stringify(form.values.latestViralLoadLaboratory) */}
           </Text>
           <Group mb={'xs'}>
             <Text size={'sm'}>Date de naissance : </Text>
@@ -572,19 +589,25 @@ export function OrderForm({
 
                     <Group mb={'xs'}>
                       <Text size={'sm'}>N° Tel clinicien</Text>
-                      <TextInput
-                          type='number'
-                          variant="unstyled"
-                          placeholder="....................................."
-                        />
+                      <ObsInput
+                        concept={Concepts.CLINICIAN_PHONE_NUMBER}
+                        variant="unstyled"
+                        placeholder={'.....................................'}
+                        form={form}
+                        name={'clinicianPhoneNumber'}
+                        type={'number'}
+                      />
                     </Group>
                     <Group mb={'xs'}>
                       <Text size={'sm'}>E-mail clinicien</Text>
-                      <TextInput
-                          type='email'
-                          variant="unstyled"
-                          placeholder="....................................."
-                        />
+                      <ObsInput
+                        concept={Concepts.CLINICAL_EMAIL}
+                        variant="unstyled"
+                        placeholder={'.....................................'}
+                        form={form}
+                        name={'clinicianEmail'}
+                        type={'text'}
+                      />
                     </Group>
                   </td>
                   <td>
@@ -606,7 +629,8 @@ export function OrderForm({
                         icon={<IconCalendar />}
                         locale="fr"
                         inputFormat="DD/MM/YYYY"
-                        maxDate={currentDate}
+                        minDate={futureDate}
+                        maxDate={new Date()}
                         placeholder={'__/__/____'}
                         {...form.getInputProps('encounter.encounterDatetime')}
                       />

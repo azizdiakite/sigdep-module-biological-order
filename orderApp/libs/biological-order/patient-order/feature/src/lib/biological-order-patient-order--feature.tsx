@@ -4,7 +4,6 @@ import {
   Grid,
   Group,
   Paper,
-  Select,
   Text,
   Alert
 } from '@mantine/core';
@@ -12,11 +11,10 @@ import { DatePicker } from '@mantine/dates';
 import { useInputState } from '@mantine/hooks';
 import { BiologicalOrderPatientOrderUiOrderForm } from '@spbogui-openmrs/biological-order/patient-order/ui/order-form';
 import { BiologicalOrderPatientOrderUiOrderPrint } from '@spbogui-openmrs/biological-order/patient-order/ui/order-print';
-import { BiologicalOrderPatientOrderUiOrderResult } from '@spbogui-openmrs/biological-order/patient-order/ui/order-result';
+import { BiologicalOrderPatientOrderUiOrderDisplay, BiologicalOrderPatientOrderUiOrderResult } from '@spbogui-openmrs/biological-order/patient-order/ui/order-result';
 import { BiologicalOrderPatientOrderUiPatientHome } from '@spbogui-openmrs/biological-order/patient-order/ui/patient-home';
 import {
   useFindFilteredEncounter,
-  useFindAllEncounters,
   useFindOnePatient,
 } from '@spbogui-openmrs/shared/ui';
 import {
@@ -28,7 +26,6 @@ import { IconCalendar, IconList, IconPlus, IconPrinter } from '@tabler/icons';
 import invariant from 'invariant';
 import { Link, Route, Routes, useParams } from 'react-router-dom';
 import PatientOrderListTable from './patient-order-list-table/patient-order-list-table';
-import { useEffect } from 'react';
 import dayjs from 'dayjs';
 import ReactToPrint from "react-to-print";
 
@@ -51,7 +48,7 @@ export function BiologicalOrderPatientOrderFeature(
   const {encounter } = useFindFilteredEncounter(patientId ,EncounterType.REQUEST_EXAM ,customEncounterParams ,'' ,'' ,true);
   const lastResult = encounter[0]?.obs.find((o) => o.concept.uuid === Concepts.HIV_VIRAL_LOAD_TEST);
   const lastResultIsAvailable = (lastResult !== undefined && encounter.length > 0) || (lastResult === undefined && encounter.length === 0);
-  //const lastResultIsAvailable = true;
+   //const lastResultIsAvailable = true;
   
 
 
@@ -106,8 +103,12 @@ export function BiologicalOrderPatientOrderFeature(
       <Divider />
       <Group p={'xs'} position={'apart'}>
         <Group>
+          <Text> Nom et Prénom(s) : </Text>
+          <Text size={'lg'}  weight={'bold'}>
+            {patient && patient.person.display}
+          </Text>
           <Text> Numéro du patient : </Text>
-          <Text size={'lg'} color={'cyan'} weight={'bold'}>
+          <Text size={'md'} color={'cyan'} weight={'bold'}>
             {patient && patient.identifiers[0].identifier}
           </Text>
         </Group>
@@ -185,6 +186,10 @@ export function BiologicalOrderPatientOrderFeature(
               <Route
                 path="result/:requestId"
                 element={<BiologicalOrderPatientOrderUiOrderResult />}
+              />
+               <Route
+                path="display/:requestId"
+                element={<BiologicalOrderPatientOrderUiOrderDisplay />}
               />
               <Route
                 path="print"

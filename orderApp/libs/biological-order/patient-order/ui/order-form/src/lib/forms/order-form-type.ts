@@ -34,8 +34,10 @@ export interface OrderFormType {
   latestViralLoadLaboratory?: string;
   latestViralLoadDate?: Date;
   requestDate?: Date;
-  encounterTime?: String;
+  encounterTime?: string;
   collectionType: string;
+  clinicianPhoneNumber?: string;
+  clinicianEmail?:string;
  // otherRegimeLine?: string;
 }
 
@@ -68,6 +70,8 @@ export const orderFormSchema = Joi.object<OrderFormType>({
   latestCd4Percentage: Joi.number().allow('').optional(),
   latestCd4Date: Joi.optional(),
   hasViralLoad: Joi.optional(),
+  clinicianPhoneNumber: Joi.optional(),
+  clinicianEmail: Joi.optional(),
   
   //hasViralLoad: Joi.string().valid(Concepts.YES, Concepts.NO).required(),
  /* latestViralLoadLaboratory :Joi.optional().when('hasViralLoad', {
@@ -137,5 +141,7 @@ export const ORDER_FORM_INITIAL_VALUE: OrderFormType =  {
   otherCVReason : "",
   providerNumber: '',
   providerEmail: '',
+  clinicianEmail: '',
+  clinicianPhoneNumber: undefined
 };
 
