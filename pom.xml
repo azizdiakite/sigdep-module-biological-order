@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.openmrs.maven.parents</groupId>
@@ -10,16 +8,17 @@
 	</parent>
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>biologicalorder</artifactId>
-	<version>1.2.0</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>BiologicalOrder</name>
 	<description>no description</description>
 	<url>https://wiki.openmrs.org/x/FQ4z</url>
 	<scm>
-		<connection>scm:git:git@github.com:openmrs/openmrs-module-biologicalorder.git</connection>
-		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-biologicalorder.git</developerConnection>
-		<url>https://github.com/openmrs/openmrs-module-biologicalorder/</url>
-	</scm>
+		<connection>scm:git:https://github.com/SIGDEP-3/sigdep-module-biological-order.git</connection>
+		<developerConnection>scm:git:https://github.com/SIGDEP-3/sigdep-module-biological-order.git</developerConnection>
+		<url>https://github.com/SIGDEP-3/sigdep-module-biological-order</url>
+	  <tag>HEAD</tag>
+  </scm>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -121,19 +120,34 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.11.0</version>
-					<configuration>
-						<source>1.8</source>
-						<target>1.8</target>
-					</configuration>
-      			</plugin>
-			</plugins>
-	 	</pluginManagement>	
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<arguments>-Dmaven.javadoc.skip=true</arguments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+					<id>skip-javadoc</id>
+					<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 	<properties>
 		<openmrsPlatformVersion>2.3.1</openmrsPlatformVersion>
@@ -141,4 +155,16 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
 	</properties>
+	<distributionManagement>
+		<repository>
+          <id>uwdigi-repo-central</id>
+          <name>libs-release</name>
+          <url>https://packages.uwdigi.org/artifactory/libs-release</url>
+        </repository>
+		<snapshotRepository>
+          <id>uwdigi-repo-snapshots</id>
+          <name>libs-snapshot</name>
+          <url>https://packages.uwdigi.org/artifactory/libs-snapshot</url>
+        </snapshotRepository>
+	</distributionManagement>
 </project>
