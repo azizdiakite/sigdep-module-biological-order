@@ -36,7 +36,7 @@ export const styles = createStyles((theme) => ({
       borderColor: theme.colors.gray[3],
       borderWidth: 1,
     },
-  },
+  }
 }));
 
 /* eslint-disable-next-line */
@@ -45,15 +45,18 @@ export interface OrderFormProps {
   patient?: Patient;
   providers: SelectItem[];
   regimenList: SelectItem[];
+  isTransfered?: boolean,
   handleSubmit: (values: OrderFormType) => void;
+  handleUpdateParent: () => void;
 }
-
 export function OrderForm({
   form,
   handleSubmit,
+  handleUpdateParent,
   patient,
   providers,
   regimenList,
+  isTransfered,
 }: OrderFormProps) {
   const { classes } = styles();
   const theme = useMantineTheme();
@@ -80,7 +83,7 @@ export function OrderForm({
   pastDate.setDate(currentDate.getDate() - 1);
   
   const {
-    transfered,
+    transfered
   } = useFindLatestObs(
     patient ? patient.uuid : '',
     dayjs(form.values.requestDate).format('YYYY-MM-DD'),
@@ -98,6 +101,7 @@ export function OrderForm({
     onCancel: () => console.log('Cancel'),
     onConfirm() {
        handleSubmit(form.values);
+       handleUpdateParent();
        const timer = setTimeout(() => {
         window.history.back();
       }, 5000); // 5000 millisecondes = 5 secondes
@@ -115,13 +119,13 @@ export function OrderForm({
             La demande ne peut etre effectuée car le patient est décédé .
           </Alert>): ''}
       
-          { transfered ? (
-            <Alert color="red" title="ATTENTION !!!!">
-            {"La demande ne peut etre effectuée car le patient a été transféré à : "+ transfered}
+          { isTransfered  ? (
+            <Alert color="red" ml={'xl'}>
+            {"Patient transféré à : "+ transfered?.value}
           </Alert>): ''}
 
         <Container id='print'  style={{
-        border: patient.person.dead || transfered  ? '2px solid #ffe3e3': 'none', // Exemple de bordure de 2px solide rouge
+        border: patient.person.dead || isTransfered  ? '2px solid #ffe3e3': 'none', // Exemple de bordure de 2px solide rouge
         borderRadius: '8px', // Exemple de bord arrondi
       }}>
           <Text size={'lg'} mb={'lg'} weight={'bold'} color={'cyan.6'}>
@@ -282,6 +286,7 @@ export function OrderForm({
               form={form}
               name={'arvInitialYear'}
               concept={Concepts.ARV_START_DATE}
+              readOnly={true}
               placeholder="......"
               variant={'unstyled'}
               maxDate={currentDate}
@@ -344,10 +349,12 @@ export function OrderForm({
               name={'regime'}
               concept={Concepts.ARV_REGIMEN}
               data={regimenList}
+              style={{color: form.values.regime ? "#F59E00": "#dc3545"}}
+              {...(form.values.regime != undefined ? {readOnly: true}: {} )}
               type={'select'}
               placeholder={'.........................................'}
               variant={'unstyled'}
-              style={{ width: '70%' }}
+             //style={{ width: '70%' }}
             />
             {/* <Select
               data={[]}
@@ -430,6 +437,7 @@ export function OrderForm({
                   type={'number'}
                   name={'initialCd4Absolute'}
                   concept={Concepts.INNITIAL_CD4_COUNT}
+                  {...(form.values.initialCd4Absolute != undefined ? {readOnly: true}: {} )}
                   variant="unstyled"
                   placeholder={'.........................................'}
                 />
@@ -439,8 +447,8 @@ export function OrderForm({
                 <ObsInput
                   form={form}
                   name={'initialCd4Percentage'}
-                  type={'number'}
                   concept={Concepts.INNITIAL_CD4_PERCENT}
+                  {...(form.values.initialCd4Percentage != undefined ? {readOnly: true}: {} )}
                   variant="unstyled"
                   placeholder={'.........................................'}
                   
@@ -453,6 +461,7 @@ export function OrderForm({
                   name={'initialCd4Date'}
                   concept={Concepts.INNITIAL_CD4_DATE}
                   variant="unstyled"
+                  {...(form.values.initialCd4Date != undefined ? {readOnly: true}: {} )}
                   placeholder={'__/__/____'}
                   type={'date'}
                 />
@@ -468,6 +477,7 @@ export function OrderForm({
                   form={form}
                   name={'latestCd4Absolute'}
                   concept={Concepts.LATE_CD4_COUNT}
+                  readOnly={true}
                   variant="unstyled"
                   placeholder={'.........................................'}
                 />
@@ -478,6 +488,7 @@ export function OrderForm({
                   form={form}
                   name={'latestCd4Percentage'}
                   concept={Concepts.LATE_CD4_PERCENT}
+                  readOnly={true}
                   variant="unstyled"
                   placeholder={'.........................................'}
                 />
@@ -489,6 +500,7 @@ export function OrderForm({
                   name={'latestCd4Date'}
                   concept={Concepts.LATE_CD4_DATE}
                   variant="unstyled"
+                  {...(form.values.latestCd4Date != undefined ? {readOnly: true}: {} )}
                   placeholder={'__/__/____'}
                   type={'date'}
                 />
@@ -527,6 +539,7 @@ export function OrderForm({
               name={'latestViralLoad'}
               concept={Concepts.LAST_VIRAL_LOAD}
               variant="unstyled"
+              type='text'
               placeholder={'........................................................'}
             />
           <Text size={'sm'}>préciser le laboratoire : </Text>
@@ -535,6 +548,8 @@ export function OrderForm({
             name={'latestViralLoadLaboratory'}
             concept={Concepts.LAST_VIRAL_LOAD_LABORATORY}
             variant="unstyled"
+         //   readOnly={form.values.latestViralLoadLaboratory ? true: false}
+         readOnly
             placeholder={'......................................................'}
               />
           </Group>
@@ -546,7 +561,9 @@ export function OrderForm({
               concept={Concepts.LAST_VIRAL_LOAD_DATE}
               variant="unstyled"
               placeholder={'__/__/____'}
+              {...(form.values.latestViralLoadDate != undefined ? {readOnly: true}: {} )}
               type={'date'}
+              readOnly
             />
           </Group>
           <Text
@@ -633,8 +650,10 @@ export function OrderForm({
                         maxDate={new Date()}
                         placeholder={'__/__/____'}
                         {...form.getInputProps('encounter.encounterDatetime')}
+                        readOnly
                       />
                     </Group>
+                    
                     <Group mb={'xs'}>
                       <Text size={'sm'}>Heure du prélèvement</Text>
                       <ObsInput
@@ -680,10 +699,10 @@ export function OrderForm({
           {/* {JSON.stringify(form.values.encounter)}  */}
           {/* {JSON.stringify(form.errors)}   */}
         </Container>
-        { patient.person.dead || transfered ? ' ': (
-            <Group position="center" p={'xs'}>
-            <Button onClick={openModal}  disabled={!form.isValid()}>Enregistrer</Button>
-          </Group>
+        { patient.person.dead ? ' ': (
+          <Group position="center" p={'xs'}>
+             <Button onClick={openModal}  disabled={!form.isValid()}>Enregistrer</Button>
+           </Group>
           )
           }
         </>

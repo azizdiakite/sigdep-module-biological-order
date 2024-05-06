@@ -9,10 +9,12 @@ import { api } from '../http-common';
 
 const API_URL = '/location';
 
-const findOne = async (uuid: string, params: string) => {
-  const response = await api.get<Location>(API_URL + `/${uuid}?v=${params}`);
+const findOne = async (uuid: string, view: string): Promise<Location> => {
+ // console.log({location_uuid: uuid});
+  const response = await api.get<Location>(API_URL + `/${uuid}?limit=1`);
   return response.data;
 };
+
 
 const findAll = async (view: string, params?: string): Promise<Location[]> => {
   // const tagParams = params ? `&tag=${params}` : '';
@@ -67,6 +69,8 @@ const remove = async (uuid: string, purge = false) => {
   return response.data;
 };
 
+
+
 export const LocationService = {
   findOne,
   findAll,
@@ -74,5 +78,5 @@ export const LocationService = {
   addOrUpdate,
   addOrUpdateAttribute,
   findLocationTags,
-  remove,
+  remove
 };

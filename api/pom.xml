@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>biologicalorder</artifactId>
-		<version>1.0.0</version>
+		<version>1.2.0</version>
 	</parent>
 
 	<artifactId>biologicalorder-api</artifactId>
@@ -13,18 +13,19 @@
 	<description>API project for BiologicalOrder</description>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
+        <dependency>
+			<groupId>org.openmrs.api</groupId>
+			<artifactId>openmrs-api</artifactId>
 		</dependency>
         <dependency>
             <groupId>org.openmrs</groupId>
             <artifactId>event-api</artifactId>
-			<version>2.8.0</version>
-            <scope>provided</scope>
         </dependency>
-
-	</dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>

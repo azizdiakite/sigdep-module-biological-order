@@ -35,6 +35,27 @@ export function useFindOneUser(uuid: string, params = 'full', enabled = true) {
   };
 }
 
+
+export function useFindUserSession(enabled = true) {
+  const {
+    data,
+    refetch: session,
+    isLoading,
+  } = useQuery(
+    ['user'],
+    async () => await UserService.session(),
+    { enabled }
+  );
+
+  const user = data ? data : undefined;
+  const userForm = data ? data : undefined;
+  return {
+    user,
+    userForm,
+    session,
+    isLoading,
+  };
+}
 export function useFindAllUsers(view: string, params = 'full', enabled = true) {
   const {
     data,

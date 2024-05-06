@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ColumnDef } from '@tanstack/react-table';
-import { EncounterRole ,Concepts} from '@spbogui-openmrs/shared/utils';
+import { EncounterRole ,Concepts, FulfillerStatus,} from '@spbogui-openmrs/shared/utils';
 
 /* eslint-disable-next-line */
 export interface OrderListTableProps {
@@ -50,7 +50,19 @@ const cols: ColumnDef<Encounter>[] = [
   {
     id: 'status',
     header: 'Statut de la demande',
-    accessorFn: (data) => data.obs.find((o) => o.concept.uuid === Concepts.HIV_VIRAL_LOAD_TEST)?.value?"Réalisé" :"En cours",
+    //accessorFn: (data) => (data?.orders[0]?.fulfillerStatus == EXCEPTION) && (data?.orders[0]?.accessionNumber == "") ? 'Réjeté' : (data.obs.find((o) => o.concept.uuid === Concepts.GROSS_HIV_VIRAL_LOAD)?.value?"Réalisé" :"En cours"),
+    accessorFn: (data ) => (
+      data?.orders[0]?.fulfillerStatus === FulfillerStatus.EXCEPTION && data?.orders[0]?.fulfillerComment !== FulfillerStatus.CANCELLED
+      ? 'Réjeté'
+      : data?.orders[0]?.fulfillerStatus === FulfillerStatus.EXCEPTION && data?.orders[0]?.fulfillerComment === FulfillerStatus.CANCELLED
+      ? 'Annuler'
+      : data?.orders[0]?.fulfillerStatus === FulfillerStatus.RECEIVED
+      ? 'En cours'
+      : data?.orders[0]?.fulfillerStatus === FulfillerStatus.COMPLETED
+      ? 'Réalisé'
+      : 'Non soumis'
+    ),
+
     // cell: ({ getValue }) => (
     //   <Text size={'sm'}>{ getValue<Obs>().value?"Completed":"In Progress" }</Text>
     // ),
@@ -94,6 +106,16 @@ const cols: ColumnDef<Encounter>[] = [
 export function OrderListTable({ orders }: OrderListTableProps) {
   const data: Encounter[] = useMemo(() => orders, [orders]);
   const columns: ColumnDef<Encounter>[] = useMemo(() => [...cols], []);
+
+  async function getEncountersSortedByDateDesc(encounters:Encounter[]): Promise<any[]> {
+    return encounters.sort((a, b) => {
+        const dateA = new Date(a.encounterDatetime).getTime();
+        const dateB = new Date(b.encounterDatetime).getTime();
+        return dateB - dateA;
+    });
+}
+
+ getEncountersSortedByDateDesc(data)
   // const tableHooks = (hooks: any) => {
   //   hooks.visibleColumns.push((columns: any) => [
   //     ...columns,

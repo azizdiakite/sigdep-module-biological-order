@@ -46,7 +46,7 @@ export function BiologicalOrderPatientOrderUiPatientHome({
             <tbody>
               <tr>
                 <td>{dayjs(latestOrder.orders[0].dateActivated).format('DD/MM/YYYY')}</td>
-                <td>{latestOrder.obs.find((o) => o.concept.uuid === Concepts.HIV_VIRAL_LOAD_TEST)?.value?"Réalisé" :"En cours"}</td>
+                <td>{latestOrder.obs.find((o) => o.concept.uuid === Concepts.GROSS_HIV_VIRAL_LOAD)?.value?"Réalisé" :"En cours"}</td>
                 <td>{latestOrder.orders[0].orderNumber}</td>
               </tr>
             </tbody>

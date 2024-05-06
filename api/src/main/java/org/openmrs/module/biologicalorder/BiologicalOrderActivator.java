@@ -39,7 +39,7 @@ import org.openmrs.event.Event.Action;
  */
 public class BiologicalOrderActivator extends BaseModuleActivator implements ApplicationContextAware, DaemonTokenAware {
 	
-	private Log log = LogFactory.getLog(this.getClass());
+	private Log log = LogFactory.getLog(BiologicalOrderActivator.class);
 	
 	private static ApplicationContext applicationContext;
 	
@@ -52,11 +52,9 @@ public class BiologicalOrderActivator extends BaseModuleActivator implements App
 	 */
 	public void started() {
 		log.info("Started BiologicalOrder");
-		System.out.println("Started BiologicalOrder:2");
-		System.out.println("daemon Token :::::" + daemonToken);
 		fixNumericConcepts();
 		eventListener = new OrderResultEventListener(daemonToken);
-		Event.subscribe(Obs.class, Action.CREATED.name().toString(), eventListener);
+		Event.subscribe(Obs.class, Action.CREATED.name(), eventListener);
 	}
 	
 	/**
@@ -64,7 +62,6 @@ public class BiologicalOrderActivator extends BaseModuleActivator implements App
 	 */
 	public void shutdown() {
 		log.info("Shutdown BiologicalOrder");
-		System.out.println("Shutdown BiologicalOrder:2");
 		if (eventListener != null) {
 			Event.unsubscribe(Obs.class, Action.CREATED, eventListener);
 		}

@@ -7,7 +7,7 @@ const authenticate = async (username: string, password: string) => {
     headers: {
       'Content-type': 'application/json',
       'Access-Control-Allow-Origin': '*',
-      Authorization: 'Basic ' + window.btoa(`${username}:${password}`),
+       Authorization: 'Basic ' + window.btoa(`${username}:${password}`),
       // window.atob(`${username}:${password}`, 'utf8').toString('base64'),
     },
   });

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>biologicalorder</artifactId>
-	<version>1.0.0</version>
+	<version>1.2.0</version>
 	<packaging>pom</packaging>
 	<name>BiologicalOrder</name>
 	<description>no description</description>
@@ -34,6 +34,20 @@
 				<version>1.8.3</version>
 				<scope>provided</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.openmrs.module</groupId>
+				<artifactId>webservices.rest-omod</artifactId>
+				<version>${restVersion}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openmrs.module</groupId>
+				<artifactId>webservices.rest-omod-common</artifactId>
+				<version>${restVersion}</version>
+				<classifier>tests</classifier>
+				<scope>test</scope>
+			</dependency>
 			<!-- Begin OpenMRS core -->
 			<dependency>
 				<groupId>org.openmrs.api</groupId>
@@ -42,6 +56,12 @@
 				<type>jar</type>
 				<scope>provided</scope>
 			</dependency>
+			 <dependency>
+				<groupId>org.openmrs</groupId>
+				<artifactId>event-api</artifactId>
+				<version>2.5</version>
+				<scope>provided</scope>
+      		</dependency>
 			<dependency>
 				<groupId>org.openmrs.web</groupId>
 				<artifactId>openmrs-web</artifactId>
@@ -117,5 +137,8 @@
 	</build>
 	<properties>
 		<openmrsPlatformVersion>2.3.1</openmrsPlatformVersion>
+		<restVersion>2.26.0</restVersion>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
 	</properties>
 </project>

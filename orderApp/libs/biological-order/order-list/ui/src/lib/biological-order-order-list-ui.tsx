@@ -1,5 +1,4 @@
 import { Container, Divider, Group, Loader, Paper, Text } from '@mantine/core';
-import { useInputState } from '@mantine/hooks';
 import { Encounter } from '@spbogui-openmrs/shared/model';
 import { useFindPatientByIdentifier } from '@spbogui-openmrs/shared/ui';
 import { useEffect, useState } from 'react';
@@ -47,7 +46,7 @@ export function BiologicalOrderOrderListUi({
     }
   }, [getPatient, identifier, patient]);
 
-  console.log(identifier);
+  //console.log(identifier);
 
   return (
     <div>
@@ -69,7 +68,7 @@ export function BiologicalOrderOrderListUi({
             <PatientSearchForm
               setIdentifier={setIdentifier}
               isLoading={isLoading}
-              patientId={patient && patient.uuid}
+              patientId={patient && patient?.uuid}
             />
           </Group>
           <Divider my={'xs'} />

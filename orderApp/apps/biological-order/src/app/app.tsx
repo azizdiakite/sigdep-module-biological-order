@@ -6,7 +6,6 @@ import { BiologicalOrderOrderListFeature } from '@spbogui-openmrs/biological-ord
 
 import { BiologicalOrderPatientOrderFeature } from '@spbogui-openmrs/biological-order/patient-order//feature';
 import { Paper, Text, useMantineTheme, Badge } from '@mantine/core';
-import { IconGitBranch } from '@tabler/icons';
 
 export function App() {
   const theme = useMantineTheme();

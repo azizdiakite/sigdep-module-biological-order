@@ -1,17 +1,15 @@
-import { Link, Route, Routes, useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import invariant from 'invariant';
 import {
-  useFindEncounter,
-  useSaveEncounter
-} from '@spbogui-openmrs/shared/ui';
+  useFindEncounter} from '@spbogui-openmrs/shared/ui';
 import dayjs from 'dayjs';
 import {
-  customEncounterParams ,Concepts, EncounterType, EncounterRole
+  customEncounterParams ,Concepts, EncounterRole, FulfillerStatus
 } from '@spbogui-openmrs/shared/utils';
 import {
   Text,
   Table,
+  Group,
 } from '@mantine/core';
 import { ENCOUNTER_INITIAL_VALUES, EncounterForm } from '@spbogui-openmrs/shared/model';
 
@@ -33,13 +31,29 @@ export function BiologicalOrderPatientOrderUiOrderResult(
     ],
   };
 
-
-  const form = ENCOUNTER_INITIAL_VALUE_FORM;
-
+//  const form = ENCOUNTER_INITIAL_VALUE_FORM;
   const {encounter} = useFindEncounter(requestId ,customEncounterParams ,true);
+  const obs = encounter?.obs.find((o) => o.concept.uuid === Concepts.GROSS_HIV_VIRAL_LOAD);
+  const isRejected = encounter?.orders[0]?.fulfillerStatus == FulfillerStatus.EXCEPTION  && encounter?.orders[0]?.fulfillerComment !== FulfillerStatus.CANCELLED
+  const isReceived = encounter?.orders[0]?.fulfillerStatus == FulfillerStatus.RECEIVED
+  const isCompleted = encounter?.orders[0]?.fulfillerStatus == FulfillerStatus.COMPLETED
+  const isCancelled = encounter?.orders[0]?.fulfillerStatus == FulfillerStatus.EXCEPTION && encounter?.orders[0]?.fulfillerComment === FulfillerStatus.CANCELLED
 
-  const obs = encounter?.obs.find((o) => o.concept.uuid === Concepts.HIV_VIRAL_LOAD_TEST);
-  const hivType = encounter?.obs.find((o) => o.concept.uuid === Concepts.TYPE_VIH); 
+   //console.log({obs: obs, isCompleted: isCompleted});
+    
+  const hivType = encounter?.obs.find((o) => o?.concept?.uuid === Concepts.TYPE_VIH); 
+  let isDoubleValue: boolean = false;
+  isDoubleValue = !isNaN(parseFloat(obs?.value)); 
+
+  function getAlternativeMessage(){
+   return isRejected
+    ? encounter?.orders[0]?.fulfillerComment
+    :isReceived
+    ? "L'echantillon est en cours de traitement."
+    :isCancelled
+    ? "La demande a été annulée."
+    : 'Aucune valeur.';
+  }
  
 /*  useEffect(() => {
       // 👇️ only runs once   
@@ -88,31 +102,38 @@ export function BiologicalOrderPatientOrderUiOrderResult(
       <h1>Résultats de la demande</h1>
       {/*{JSON.stringify(encounter)}*/}
 
-      {obs ? (
+      {obs && isCompleted ? (
         <div>
-           <Text size={"md"} pb={"xs"} pl={'xs'}>Labno :{" "}</Text>
-
+          <Group mb={'xs'}>
+           <Text size={"md"} pl={'xs'} >Labno :</Text>
+            <Text weight={'bold'}>{encounter?.orders[0].accessionNumber}</Text>
+          </Group>
+         
          <Table>
             <tbody>
+              <tr></tr>
               <tr>
                 <td>
-                  <Text size={"md"} pb={"xs"}>Date de réception :{" "}</Text>
+                  <Group>
+                    <Text size={"md"}>Date de réception :{" "}</Text>
+                    <Text weight={'bold'} size={"md"}>  {!!encounter?.orders[0].dateActivated && dayjs(encounter?.orders[0].dateActivated).format('DD/MM/YYYY')}</Text>
+                  </Group>
                 </td>
                 <td>
-                  <Text size={"md"} pb={"xs"}>
-                  Date de Prélèvement : {" "}
-                  {!!encounter?.encounterDatetime && dayjs(encounter?.encounterDatetime).format('DD/MM/YYYY')}
-                  </Text>
+                  <Group>
+                   <Text size={"md"} > Date de Prélèvement : {" "} </Text>
+                   <Text weight={'bold'} size={"md"}>  {!!encounter?.encounterDatetime && dayjs(encounter?.encounterDatetime).format('DD/MM/YYYY')}</Text>
+                  </Group>
                 </td>
               </tr>
-              <tr>
+              <tr>{/*
                 <td> <Text size={"md"} pb={"xs"}>Date de réalisation :{" "}</Text></td>
-                <td> <Text size={"md"} pb={"xs"}>Date de Validation :{" "}</Text></td>
+                <td> <Text size={"md"} pb={"xs"}>Date de Validation :{" "}</Text></td>*/}
               </tr>
             </tbody>
           </Table>
  
-          <Table striped>
+          <Table striped mt={'xs'}>
             <thead>
               <tr>
                 <th>Virologie</th>
@@ -123,20 +144,28 @@ export function BiologicalOrderPatientOrderUiOrderResult(
             <tbody>
               <tr>
                 <td>
+                  <Text weight={'bold'}>
                   {hivType
                     ? hivType.display.split(":",2)[1]
                     : ""}
+                  </Text>
                 </td>
-                <td>{obs ? obs.value : ""}</td>
                 <td>
-                  {obs && (Math.log(obs.value) / Math.log(10)).toFixed(2)}
+                  <Text weight={'bold'}>
+                      {obs ? obs.value : ""}
+                  </Text>
+                </td>
+                <td>
+                  <Text weight={'bold'}>
+                    {isDoubleValue ? (Math.log(obs.value) / Math.log(10)).toFixed(2): ''  }
+                  </Text>
                 </td>
               </tr>
             </tbody>
           </Table>
         </div>
       ) : (
-        <p>Aucune valeur.</p>
+        <p>{getAlternativeMessage()}</p>
       )}
       {/*   <Text size={'xl'} pb={'xs'}>
         {obs?obs.value +" cp /ml": "Aucune valeur Oui"}

@@ -7,7 +7,7 @@
 	<name>${project.parent.name}</name>
 	<version>${project.parent.version}</version>
 	<package>org.openmrs.module.biologicalorder</package>
-	<author>bogui</author>
+	<author>ITECH</author>
 	<description>
 			${project.parent.description}
 	</description>
@@ -37,7 +37,7 @@
 	</aware_of_modules>
 
 	<require_modules>
-
+        <require_module>org.openmrs.event</require_module>
 		<require_module version="2.26">
 			org.openmrs.module.webservices.rest
 		</require_module>
@@ -57,13 +57,14 @@
 	 /AOP -->
 	
 	
-	<!-- Required Privileges 
-	<privilege>
-		<name>Form Entry</name>
-		<description>Allows user to access Form Entry pages/functions</description>
-	</privilege>
-	 /Required Privileges -->
+	<!-- Required Privileges -->
 
+	<privilege>
+		<name>BiologicalOrder Privilege</name>
+		<description>Allows users to access to biologicalorder module</description>
+	</privilege>
+	 
+	<!--/Required Privileges -->
 
 	<!-- Required Global Properties -->
 	<globalProperty>

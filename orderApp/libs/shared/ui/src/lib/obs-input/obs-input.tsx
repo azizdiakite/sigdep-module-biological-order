@@ -259,6 +259,7 @@ ObsInputProps) {
         onBlurCapture={() => setIsChanged(true)}
         readOnly={readOnly}
         variant={variant}
+        styles={style}
       >
         {form.values[name]}
       </Textarea>

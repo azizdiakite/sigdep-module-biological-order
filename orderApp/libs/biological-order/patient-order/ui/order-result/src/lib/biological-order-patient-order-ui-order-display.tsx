@@ -5,7 +5,7 @@ import {
   useFindOnePatient} from '@spbogui-openmrs/shared/ui';
 import dayjs from 'dayjs';
 import {
-  customEncounterParams ,Concepts} from '@spbogui-openmrs/shared/utils';
+  customEncounterParams ,Concepts, IdentifierType} from '@spbogui-openmrs/shared/utils';
 import {
   Text,
   Paper,
@@ -13,8 +13,12 @@ import {
   Space,
   Grid,
   Table,
-  useMantineTheme
+  Button,
+  useMantineTheme,
+  Flex
 } from '@mantine/core';
+import ReactToPrint from 'react-to-print';
+import { IconPrinter } from '@tabler/icons';
 
 
 /* eslint-disable-next-line */
@@ -46,10 +50,11 @@ export function BiologicalOrderPatientOrderUiOrderDisplay(
   const lateCd4Count = encounter?.obs.find((o) => o.concept.uuid === Concepts.LATE_CD4_COUNT);
   const lateCd4Percent = encounter?.obs.find((o) => o.concept.uuid === Concepts.LATE_CD4_PERCENT);
   const lateCd4Date = encounter?.obs.find((o) => o.concept.uuid === Concepts.LATE_CD4_DATE);
+  const arvRegimen = encounter?.obs.find((o) => o.concept.uuid === Concepts.ARV_REGIMEN);
   const hasViralLoad = encounter?.obs.find((o) => o.concept.uuid === Concepts.HAS_VIRAL_LOAD);
   const lastViralLoad = encounter?.obs.find((o) => o.concept.uuid === Concepts.LAST_VIRAL_LOAD);
   const lastViralLoadDate = encounter?.obs.find((o) => o.concept.uuid === Concepts.LAST_VIRAL_LOAD_DATE);
-  const arvRegimen = encounter?.obs.find((o) => o.concept.uuid === Concepts.ARV_REGIMEN);
+  const laboratoire = encounter?.obs.find((o) => o.concept.uuid === Concepts.LAST_VIRAL_LOAD_LABORATORY);
   const viralLoadRequestDate = encounter?.obs.find((o) => o.concept.uuid === Concepts.VIRAL_LOAD_REQUEST_DATE);
   const viralLoadRequestTime = encounter?.obs.find((o) => o.concept.uuid === Concepts.VIRAL_LOAD_REQUEST_TIME);
   const collectionType = encounter?.obs.find((o) => o.concept.uuid === Concepts.COLLECTION_TYPE);
@@ -57,24 +62,53 @@ export function BiologicalOrderPatientOrderUiOrderDisplay(
   const currentlyBreastfeeding = encounter?.obs.find((o) => o.concept.uuid === Concepts.CURRENTLY_BREAST_FEEDING);
   const clinicianPhoneNumber = encounter?.obs.find((o) => o.concept.uuid === Concepts.CLINICIAN_PHONE_NUMBER);
   const clinicianEmail = encounter?.obs.find((o) => o.concept.uuid === Concepts.CLINICAL_EMAIL);
+  const upidIdentifier = localStorage.getItem('upid') ? localStorage.getItem('upid'): '';
 
+  //console.log({upidIdentifier: upidIdentifier});
   
   return (
     <div>
-    <Paper shadow="xl" radius="xl" p="xl" id='print' bg={'gray.1'}>
-          <Text size={'lg'} mb={'lg'} weight={'bold'} color={'cyan.6'}>
+    <Paper shadow="xl" radius="xl" p="md" id='print' bg={'gray.1'}>
+          <Text size={'lg'} weight={'bold'} color={'cyan.6'}>
             DONNEES PATIENT
-            {JSON.stringify(clinicianPhoneNumber?.value)}
+            {/*JSON.stringify(clinicianPhoneNumber?.value)*/}
           </Text>
           <Table >
               <tbody>
+                
+
                 <tr>
+                 
                   <td>
-                    <Text size={'sm'}>Nom & Prénom(s) : </Text>
+                    <Text size={'sm'}>Code ARV : </Text>
                     <Text weight={'bold'}>
-                      { patient?.person?.display}
+                      { encounter?.patient?.identifiers[0]?.identifier }
                     </Text>
                   </td>
+                  <td>
+                    <Text size={'sm'}>UPID : </Text>
+                    <Text weight={'bold'}>
+                      { upidIdentifier }
+                    </Text>
+                  </td>
+                  <td>
+                  <Text size={'sm'} pb={'xs'}>Allaitement :{''}</Text>
+                  <Text weight={'bold'}>{currentlyBreastfeeding ? currentlyBreastfeeding?.display?.split(":", 2)[1] : ''}</Text>
+                  </td>
+                  <td>
+                    <Text size={'sm'}>Sexe : </Text>
+                    <Text weight={'bold'}>
+                       {patient?.person?.gender === 'M' ? ('MASCULIN') : ('FEMININ')}
+                    </Text>
+                  </td>
+                </tr>
+                <tr>
+                   {/*<td>
+                   <Text size={'sm'}>Nom & Prénom(s) : </Text>
+                    <Text weight={'bold'}>
+                      patient?.person?.display
+                    </Text> 
+                  </td>*/}
                   <td>
                     <Text size={'sm'}>Date de naissance : </Text>
                     <Text weight={'bold'}>
@@ -91,34 +125,10 @@ export function BiologicalOrderPatientOrderUiOrderDisplay(
                   </td>
                 </tr>
 
-                <tr>
-                  <td>
-                    <Text size={'sm'}>Sexe : </Text>
-                    <Text weight={'bold'}>
-                       {patient?.person?.gender === 'M' ? ('MASCULIN') : ('FEMININ')}
-                    </Text>
-                  </td>
-                  <td>
-                    <Text size={'sm'}>Code ARV : </Text>
-                    <Text weight={'bold'}>
-                      { encounter?.patient?.identifiers[0]?.identifier }
-                    </Text>
-                  </td>
-                  <td>
-                    <Text size={'sm'}>UPID : </Text>
-                    <Text weight={'bold'}>
-                      { encounter?.patient?.identifiers[1]?.identifier }
-                    </Text>
-                  </td>
-                  <td>
-                  <Text size={'sm'} pb={'xs'}>Allaitement :{''}</Text>
-                  <Text weight={'bold'}>{currentlyBreastfeeding ? currentlyBreastfeeding?.display?.split(":", 2)[1] : ''}</Text>
-                  </td>
-                </tr>
 
               </tbody>
             </Table>
-     <Text size={'lg'} my={'lg'} weight={'bold'} color={'cyan.6'}>
+     <Text size={'lg'} my={'xs'} weight={'bold'} color={'cyan.6'}>
             DONNEES CLINIQUES
      </Text>
      <Group mb={'xs'}>
@@ -166,8 +176,8 @@ export function BiologicalOrderPatientOrderUiOrderDisplay(
         </Text>
       </Group>
        
-      <Grid my={'md'} pl={'lg'}>
-            <Grid.Col span={6} p={'lg'}>
+      <Grid my={'xs'} pl={'xs'}>
+            <Grid.Col span={6} p={'xs'}>
               <Text size={'sm'} weight={'bold'} underline mb={'sm'}>
                 A l'initiation du traitement
               </Text>
@@ -190,7 +200,7 @@ export function BiologicalOrderPatientOrderUiOrderDisplay(
                </Text>
               </Group>
             </Grid.Col>
-            <Grid.Col span={6} p={'lg'}>
+            <Grid.Col span={6} p={'xs'}>
               <Text size={'sm'} weight={'bold'} underline mb={'sm'}>
                 A la demande de Charge virale
               </Text>
@@ -227,13 +237,21 @@ export function BiologicalOrderPatientOrderUiOrderDisplay(
             <Text weight={'bold'}>
                 {lastViralLoad ? lastViralLoad?.display?.split(":", 2)[1] : ''}
             </Text>
-            <Text size={'sm'}>
-              Date: 
-            </Text>
-            <Text weight={'bold'}>
-              {lastViralLoadDate ? dayjs(lastViralLoadDate?.value).format('DD/MM/YYYY') : ''}
-            </Text>
           </Group> 
+          <Group mb={'sm'} ml={'xl'}>
+                <Text size={'sm'}>
+                  Laboratoire: 
+                </Text>
+                <Text weight={'bold'}>
+                    {laboratoire ? laboratoire?.display?.split(":", 2)[1] : ''}
+                </Text>
+                <Text size={'sm'}>
+                  Date: 
+                </Text>
+                <Text weight={'bold'}>
+                  {lastViralLoadDate ? dayjs(lastViralLoadDate?.value).format('DD/MM/YYYY') : ''}
+                </Text>
+             </Group>
           <Paper >
             <Table >
               <tbody>
@@ -265,7 +283,7 @@ export function BiologicalOrderPatientOrderUiOrderDisplay(
                     <Group mb={'xs'}>
                       <Text size={'sm'}>Nom du préleveur  <span style={{ color: theme.colors.red[8] }}>*</span></Text>
                       <Text weight={'bold'}>
-                        {encounter?.encounterProviders[0].provider.person.names[0].givenName}
+                       {encounter?.encounterProviders[1].provider.person.names[0].givenName}
                       </Text>
                     </Group>
                     <Group mb={'xs'}>
@@ -290,11 +308,31 @@ export function BiologicalOrderPatientOrderUiOrderDisplay(
                 </tr>
               </tbody>
             </Table>
+           
           </Paper>
-
     </Paper>
+    <Flex
+      direction={{ base: 'column', sm: 'row' }}
+      gap={{ base: 'sm', sm: 'lg' }}
+      justify={{ sm: 'center' }}
+      mt={'md'}
+    >
+     {/*  <ReactToPrint
+          trigger={() =>  <Button
+          leftIcon={<IconPrinter />}
+          color={'cyan'}
+          >
+            Imprimer
+          </Button>}content={() =>  document.getElementById('print')!}
+          /> */}
+    </Flex>
+   
   </div>
   );
 }
 
 export default BiologicalOrderPatientOrderUiOrderDisplay;
+/*.New: #8FED8F (Vert clair)
+.Auto Matches: #4DA6FF (Bleu)
+.Potential Matches: #FFFF4D (Jaune)
+.Conflict Matches: #FF6666 (Rouge)*/
