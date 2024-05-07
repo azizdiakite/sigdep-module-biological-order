@@ -22,9 +22,10 @@ export function PatientSearchForm({
 
   useEffect(() => {
     if (
-      patientIdentifier.match(/^[0-9]{4}\/.{2}\/[0-9]{2}\/[0-9]{5}$/g) ||
-      patientIdentifier.match(/^[0-9]{4}-[0-9]{2}-[0-9]{4}$/g) ||
-      patientIdentifier.match(/^[0-9]{4}\/.{2}\/[0-9]{2}\/[0-9]{5}E?$/g)
+      patientIdentifier.match(/^[0-9]{4,5}\/.{2}\/[0-9]{2}\/[0-9]{5}$/g) ||
+      patientIdentifier.match(/^[0-9]{4,5}-[0-9]{2}-[0-9]{4}$/g) ||
+      patientIdentifier.match(/^[0-9]{4,5}\/.{2}\/[0-9]{2}\/[0-9]{5}E?$/g)
+      
     ) {
       setIdentifier(patientIdentifier);
       setIdentifierIsCorrect(true);

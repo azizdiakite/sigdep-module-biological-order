@@ -29,7 +29,7 @@ export interface Location {
   display: string;
   name: string;
   description?: string;
-  parentLocation?: Location;
+  parentLocation: Location;
   tags?: LocationTag[];
   address1?: string;
   address2?: string;
@@ -39,7 +39,7 @@ export interface Location {
   address6?: string;
   address7?: string;
   address8?: string;
-  postalCode?: string;
+  postalCode: string;
   childLocations?: Location[];
   attributes?: LocationAttribute[];
   uuid: string;

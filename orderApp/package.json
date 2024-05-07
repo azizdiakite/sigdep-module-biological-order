@@ -79,6 +79,7 @@
     "joi": "^17.7.0",
     "joi-password": "^4.0.0",
     "logging-library": "^0.5.0",
+    "pdf-lib": "^1.17.1",
     "pizzip": "^3.1.4",
     "react": "18.2.0",
     "react-doc-viewer": "^0.1.5",
@@ -87,6 +88,7 @@
     "react-input-mask": "^2.0.4",
     "react-router-dom": "6.4.3",
     "react-table": "^7.8.0",
+    "react-to-print": "^2.14.15",
     "regenerator-runtime": "0.13.7",
     "tslib": "^2.3.0"
   }

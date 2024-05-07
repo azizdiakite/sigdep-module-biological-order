@@ -70,11 +70,17 @@ export const CustomTable = ({
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useInputState('');
+  const [selectedRow, setSelectedRow] = React.useState<number>();
   // const [{ pageIndex, pageSize }, setPagination] =
   //   React.useState<PaginationState>({
   //     pageIndex: 0,
   //     pageSize: 10,
   //   });
+
+    
+  const handleRowClick = (index: any) => {
+    setSelectedRow(index === selectedRow ? null : index);
+  };
 
   const customColor = color ? theme.colors[color] : undefined;
 
@@ -234,18 +240,18 @@ export const CustomTable = ({
             {table.getRowModel().rows.map((row, idx) => {
               return (
                 <tr
+                  onClick={() => handleRowClick(row.index)}
                   key={row.id}
-                  style={
-                    striped
-                      ? {
-                          backgroundColor: isEven(idx)
-                            ? customColor
-                              ? customColor[1]
-                              : theme.colors.gray[1]
-                            : undefined,
-                        }
-                      : undefined
-                  }
+                  style={{
+                    backgroundColor:
+                      selectedRow === row.index
+                        ? '#FCEC9C'
+                        : striped && isEven(idx)
+                        ? customColor
+                          ? customColor[1]
+                          : theme.colors.gray[1]
+                        : '#FFFFFF',
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => {
                     return (

@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Resource(name = RestConstants.VERSION_1 + "/obs", supportedClass = Obs.class, supportedOpenmrsVersions = { "1.8.*",
-        "1.9.*", "1.11.*", "1.12.*", "2.*" }, order = 4)
+@Resource(name = RestConstants.VERSION_1 + "/observation-in", supportedClass = Obs.class, supportedOpenmrsVersions = {
+        "1.8.*", "1.9.*", "1.11.*", "1.12.*", "2.*" }, order = 4)
 public class ExtendedObsResource extends ObsResource1_11 {
 	
 	@Override

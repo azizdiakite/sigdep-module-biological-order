@@ -6,8 +6,26 @@ export function loadFile(url: any, callback: any) {
   PizZipUtils.getBinaryContent(url, callback);
 }
 
+export const loadFiles = (url: string, callback: (error: any, content: any) => void) => {
+  fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+              callback(null, event.target?.result);
+          };
+          reader.onerror = (event) => {
+              callback(event.target?.error, null);
+          };
+          reader.readAsArrayBuffer(blob);
+      })
+      .catch(error => {
+          callback(error, null);
+      });
+};
+
 export const generateDocument = (uri: string) => {
-  loadFile(uri, (error: any, content: any) => {
+  loadFiles(uri, (error: any, content: any) => {
     if (error) {
       throw error;
     }

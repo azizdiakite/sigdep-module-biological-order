@@ -26,6 +26,8 @@ export interface Order {
   orderType: OrderType;
   action: string;
   accessionNumber: string;
+  fulfillerStatus?: string,
+  fulfillerComment?: string,
   patient: Patient;
   concept: Concept;
   orderer: Provider;

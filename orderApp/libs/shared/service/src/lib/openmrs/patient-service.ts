@@ -7,6 +7,8 @@ import {
 import { api } from '../http-common';
 
 const API_URL = '/patient';
+const API_URL_ID_TYPE = '/patientidentifiertype';
+
 
 const findOne = async (uuid: string, params = 'full'): Promise<Patient> => {
   const response = await api.get<Patient>(API_URL + `/${uuid}?v=${params}`);
@@ -67,6 +69,15 @@ const remove = async (uuid: string): Promise<void> => {
   await api.delete(API_URL + `/${uuid}?`);
 };
 
+const findPatientIdentifier = async (
+  identifierType: string,
+): Promise<Patient[]> => {
+  const response = await api.get<any>(
+    API_URL + `/${identifierType}`
+  );
+  return response.data.results;
+};
+
 export const PatientService = {
   findOne,
   findOneByIdentifier,
@@ -76,4 +87,5 @@ export const PatientService = {
   remove,
   saveIdentifier,
   updateIdentifier,
+  findPatientIdentifier
 };

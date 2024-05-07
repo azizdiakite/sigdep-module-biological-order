@@ -5,6 +5,7 @@ import { Person, PersonForm, personSchema } from './person';
 export interface PatientIdentifierType {
   name: string;
   description?: string;
+  display: string;
   uuid: string;
 }
 
@@ -28,6 +29,7 @@ export interface Patient {
   person: Person;
   identifiers: PatientIdentifier[];
   patientIdentifier?: PatientIdentifier;
+  transfered?: string;
   uuid: string;
 }
 

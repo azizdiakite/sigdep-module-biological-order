@@ -10,7 +10,7 @@ export const between = (value: number, a: number, b: number): boolean => {
 };
 
 export const customEncounterParams =
-  'custom:(encounterDatetime,uuid,location:(uuid,name),encounterType:(uuid),obs:(display,value:(uuid),groupMembers:(value:(uuid),concept:(datatype:(name),uuid),uuid),concept:(datatype:(name),uuid),uuid),patient:(uuid,identifiers:(identifier),person:(names:(givenName,familyName))),encounterProviders:(uuid,encounterRole:(uuid),provider:(uuid,person:(names:(givenName,familyName)))),orders:(orderNumber,dateActivated))';
+  'custom:(encounterDatetime,uuid,location:(uuid,name),encounterType:(uuid),obs:(display,value:(uuid),groupMembers:(value:(uuid),concept:(datatype:(name),uuid),uuid),concept:(datatype:(name),uuid),uuid),patient:(uuid,identifiers:(identifier),person:(names:(givenName,familyName))),encounterProviders:(uuid,encounterRole:(uuid),provider:(uuid,person:(names:(givenName,familyName)))),orders:(orderNumber,accessionNumber,fulfillerStatus,fulfillerComment,dateActivated))';
 
 export const customPatientParams =
   'custom:(person:(gender,birthdate,age,names:(familyName,givenName,uuid,preferred),' +

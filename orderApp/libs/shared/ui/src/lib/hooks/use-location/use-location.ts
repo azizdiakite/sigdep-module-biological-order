@@ -137,3 +137,23 @@ export const useRemoveLocation = (purge = false) => {
     isLoading,
   };
 };
+
+export const useFindOneLocation = (
+  uuid: string,
+  params = 'default',
+  view = 'full'
+) => {
+  const {
+    data,
+    refetch: findOne,
+    isLoading,
+  } = useQuery(
+    [uuid, params, view],
+    async () => await LocationService.findOne(uuid, params),
+    { enabled: true }
+  );
+
+  const location = data ? data : undefined;
+  const locationSecond = data ? data : undefined;
+  return { location, locationSecond, findOne, isLoading };
+};

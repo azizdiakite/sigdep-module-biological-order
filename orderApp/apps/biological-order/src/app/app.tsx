@@ -5,7 +5,7 @@ import { Route, Routes, Link } from 'react-router-dom';
 import { BiologicalOrderOrderListFeature } from '@spbogui-openmrs/biological-order/order-list/feature';
 
 import { BiologicalOrderPatientOrderFeature } from '@spbogui-openmrs/biological-order/patient-order//feature';
-import { Paper, Text, useMantineTheme } from '@mantine/core';
+import { Paper, Text, useMantineTheme, Badge } from '@mantine/core';
 
 export function App() {
   const theme = useMantineTheme();
@@ -30,7 +30,6 @@ export function App() {
           Demande d'examens biologiques
         </Text>
       </Paper>
-
       <Routes>
         <Route
           path="/patient-order/:patientId/*"
@@ -38,6 +37,7 @@ export function App() {
         />
         <Route path="/" element={<BiologicalOrderOrderListFeature />} />
       </Routes>
+      <Badge color="blue"> v1.0.1</Badge>
       {/* END: routes */}
     </>
   );

@@ -13,6 +13,8 @@ export interface Obs {
   uuid: string;
   groupMembers: Obs[];
   voided?: boolean;
+  dateCreated?: Date ;
+  encounter: ObsEncouterForms;
 }
 
 export interface ObsForm {
@@ -33,3 +35,16 @@ export interface ObsEncounterForm {
   voided?: boolean;
   uuid?: string;
 }
+
+export interface ObsEncouterForms {
+ form: ObsEncounterType;
+ encounterDatetime: Date;
+}
+
+export interface ObsEncounterType {
+  encounterType: ObsEncounterTypeStructure
+}
+
+export interface ObsEncounterTypeStructure {
+  uuid: string
+ }

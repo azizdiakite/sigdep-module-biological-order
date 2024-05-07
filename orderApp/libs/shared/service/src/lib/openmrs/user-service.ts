@@ -3,6 +3,7 @@ import { api } from '../http-common';
 import { User } from '@spbogui-openmrs/shared/model';
 
 const API_URL = '/user';
+const API_SESSION ='/location'
 
 const findOne = async (uuid: string, params: string) => {
   const response = await api.get<User>(API_URL + `/${uuid}?v=${params}`);
@@ -29,9 +30,15 @@ const remove = async (uuid: string, purge = false) => {
   return response.data;
 };
 
+const session = async (): Promise<any> => {
+  const response = await api.get<any>(API_SESSION);
+  return response.data;
+};
+
 export const UserService = {
   findOne,
   findAll,
   addOrUpdate,
   remove,
+  session
 };
