@@ -42,7 +42,19 @@ const cols: ColumnDef<Encounter>[] = [
     cell: ({ getValue }) => {
       return (
         <Text style={{ textAlign: 'left' }} size={'sm'}>
-          {!!getValue() && dayjs(getValue<Date>()).format('DD/MM/YYYY')}
+         {dayjs(getValue<Date>()).format('DD/MM/YYYY')}
+        </Text>
+      );
+    },
+  },
+  {
+    id: 'createDate',
+    header: 'Date de creation',
+    accessorFn: (data) => data.dateCreated,
+    cell: ({ getValue }) => {
+      return (
+        <Text style={{ textAlign: 'left' }} size={'sm'}>
+          {!!getValue() && dayjs(getValue<Date>()).format('DD/MM/YYYY HH:MM')}
         </Text>
       );
     },
@@ -115,7 +127,7 @@ export function OrderListTable({ orders }: OrderListTableProps) {
     });
 }
 
- getEncountersSortedByDateDesc(data)
+ getEncountersSortedByDateDesc(data); 
   // const tableHooks = (hooks: any) => {
   //   hooks.visibleColumns.push((columns: any) => [
   //     ...columns,

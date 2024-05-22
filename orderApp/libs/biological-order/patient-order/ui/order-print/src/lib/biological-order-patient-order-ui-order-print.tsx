@@ -1,5 +1,5 @@
 // import Docxtemplater from 'docxtemplater';
-import { Concepts, Gender, initFormValues, siteList, loadFiles } from '@spbogui-openmrs/shared/utils';
+import { Concepts, Gender, initFormValues, siteList, loadFiles, customEncounterParams } from '@spbogui-openmrs/shared/utils';
 import Docxtemplater from 'docxtemplater';
 import PizZip from 'pizzip';
 import { useState } from 'react';
@@ -9,7 +9,7 @@ import { Encounter, Patient } from '@spbogui-openmrs/shared/model';
 import { IconPrinter } from '@tabler/icons';
 import dayjs from 'dayjs';
 import { useFindLatestObs } from '../../../order-form/src/lib/use-find-latest-obs/use-find-latest-obs';
-import { useFindOneLocation } from '@spbogui-openmrs/shared/ui';
+import { useFindLastBilanEncounter, useFindLastEnrollmentEncounter, useFindOneLocation } from '@spbogui-openmrs/shared/ui';
 import PizZipUtils from 'pizzip/utils';
 
 // import FileViewer from "react-file-viewer";
@@ -59,7 +59,12 @@ const upid  = localStorage.getItem('upid') ? localStorage.getItem('upid'): '…�
     initialCd4Absolute,
     grossHivViralLoadTest,
     accessionNumber,
-    accessionNumberDateCreated
+    accessionNumberDateCreated,
+    biologicalEncounter,
+    initialCD4CountValue,
+    initialCD4PercentValue,
+    initialCD4DateValue,
+    lastestHivViralLoad
     
   } = useFindLatestObs(patient ? patient.uuid : '',dayjs(requestDate).format('YYYY-MM-DD'),'');
     
@@ -75,22 +80,33 @@ const upid  = localStorage.getItem('upid') ? localStorage.getItem('upid'): '…�
   const { locationSecond } = useFindOneLocation(uuid);
   let sanitaryRegion = locationSecond !== undefined? locationSecond : undefined ;
   const region = sanitaryRegion !== undefined ? sanitaryRegion.parentLocation?.display: '';
-  
-  if(initialCd4DateForm){        
-    arvStartDate = new Date(initialCd4DateForm);
-  }else if(arvInitialYear){
-    arvStartDate = new Date(arvInitialYear);
-  }else if(treatmentStartDate){
-    arvStartDate = new Date(treatmentStartDate);
-  }
 
+  let lastCountValue = biologicalEncounter?.obs?.find((o) => o.concept.uuid === Concepts.INNITIAL_CD4_COUNT_INIT_FORM);
+  let lastPercentValue = biologicalEncounter?.obs?.find((o) => o.concept.uuid === Concepts.INNITIAL_CD4_PERCENT_INIT_FORM);
+
+    let hivViralLoadTestValue = lastestHivViralLoad?.obs?.find((o) => o.concept.uuid === Concepts.HIV_VIRAL_LOAD_TEST)?.value;
+    const hasVLoad = (grossHivViralLoadTest || hivViralLoadTestValue) ;
+    const viralLoadValue  = grossHivViralLoadTest !== undefined ? grossHivViralLoadTest : hivViralLoadTestValue
+    const lastHivDate  =  accessionNumberDateCreated ? accessionNumberDateCreated : lastestHivViralLoad?.encounterDatetime
+    
+    if(initialCd4DateForm){        
+      arvStartDate = new Date(initialCd4DateForm);
+    }else if(arvInitialYear){
+      arvStartDate = new Date(arvInitialYear);
+    }else if(treatmentStartDate){
+      arvStartDate = new Date(treatmentStartDate);
+    }
+   
   const date = new Date(); // Assuming the currenwq-t date and time
-  const options: Intl.DateTimeFormatOptions = {
+   const options: Intl.DateTimeFormatOptions = {
       day: '2-digit', month: '2-digit', year: 'numeric',
       hour: '2-digit', minute: '2-digit', second: '2-digit',
       hour12: false // Use 24-hour format
   };
 
+
+ //console.log({date : biologicalEncounter});
+ 
  const formattedDate = new Intl.DateTimeFormat('en-GB', options).format(date);
 
   const generateDocument = () => {
@@ -126,20 +142,20 @@ const upid  = localStorage.getItem('upid') ? localStorage.getItem('upid'): '…�
         line1: (treatmentLine?.display === initFormValues.FIRST_LINE_DESCRIPTION) ? CROSS : DOUBLE_UNDERSCORE,
         line2: (treatmentLine?.display === initFormValues.SECOND_LINE_DESCRIPTION) ? CROSS : DOUBLE_UNDERSCORE,
         line3: (treatmentLine?.display === initFormValues.THIRD_LINE_DESCRIPTION) ? CROSS : DOUBLE_UNDERSCORE,
-        hvl: (grossHivViralLoadTest !== undefined) ? CROSS : DOUBLE_UNDERSCORE,
-        hnvl : (grossHivViralLoadTest === undefined)? CROSS : DOUBLE_UNDERSCORE,
-        lab : laboratory ? laboratory: '…………………',
-        value : grossHivViralLoadTest ? grossHivViralLoadTest: '……………………',
-        lastDate : accessionNumberDateCreated ? dayjs(accessionNumberDateCreated).format('DD/MM/YYYY') :'……………',
+        hvl: (hasVLoad !== undefined) ? CROSS : DOUBLE_UNDERSCORE,
+        hnvl : (hasVLoad === undefined)? CROSS : DOUBLE_UNDERSCORE,
+        lab : laboratory ? laboratory: '………',
+        value : viralLoadValue !== undefined ? viralLoadValue : '……',
+        lastDate : lastHivDate !== undefined ? dayjs(lastHivDate).format('DD/MM/YYYY') :'………',
         preg : (pregnancyStatus?.value?.uuid === Concepts.YES) ? CROSS: DOUBLE_UNDERSCORE,
         feed:  (currentlyBreastfeeding?.value?.uuid === Concepts.YES) ? CROSS: DOUBLE_UNDERSCORE,
         printDate : formattedDate,
-        icd4c : initialCd4AbsoluteForm ? initialCd4AbsoluteForm : '……………………',
-        icd4p : initialCd4PercentageForm ? initialCd4PercentageForm : '……………………',
-        icd4d : initialCd4DateForm ?  dayjs(lastViralDateLoad).format('DD/MM/YYYY') : NO_CD4_DATE,
-        lcd4c : initialCd4Absolute === undefined ?  initialCd4AbsoluteForm  : initialCd4Absolute,
-        lcd4p : initialCd4Percentage === undefined ? initialCd4PercentageForm : initialCd4Percentage,
-        lcd4d : initialCd4DateForm ?  dayjs(lastViralDateLoad).format('DD/MM/YYYY') : NO_CD4_DATE,
+        icd4c : initialCD4CountValue?.value !== undefined ? initialCD4CountValue?.value : '………',
+        icd4p : initialCD4PercentValue?.value !== undefined ? initialCD4PercentValue?.value : '………',
+        icd4d : initialCD4DateValue?.value !== undefined ? dayjs(initialCD4DateValue?.value).format('DD/MM/YYYY') : NO_CD4_DATE,
+        lcd4c : lastCountValue?.value !== undefined ? lastCountValue?.value : '' ,
+        lcd4p : lastPercentValue?.value !== undefined ? lastPercentValue?.value : '' ,
+        lcd4d : biologicalEncounter !== undefined ?  dayjs(biologicalEncounter?.encounterDatetime).format('DD/MM/YYYY') : NO_CD4_DATE,
       });
       try {
         // render the document (replace all occurences of {first_name} by John, {last_name} by Doe, ...)

@@ -38,6 +38,7 @@ export interface EncounterType {
 
 export interface Encounter {
   encounterDatetime: Date;
+  dateCreated: Date;
   obs: Obs[];
   patient: Patient;
   orders: Order[];
@@ -56,12 +57,14 @@ export interface EncounterForm {
   encounterProviders: EncounterProviderForm[];
   uuid?: string;
   form?: string;
+  creator: string;
 }
 
 export const ENCOUNTER_INITIAL_VALUES: EncounterForm = {
   patient: '',
   encounterProviders: [{ encounterRole: '', provider: '' }],
   location: '',
+  creator:'',
   obs: [],
   encounterDatetime: undefined,
   encounterType: '',

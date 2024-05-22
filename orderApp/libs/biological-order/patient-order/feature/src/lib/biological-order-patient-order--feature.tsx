@@ -98,7 +98,7 @@ export function BiologicalOrderPatientOrderFeature(
     warning_message = "La demande ne peut etre effectuée car le patient est décédé.";
   }
 
-  console.log({transfered: isTransfered(lastEnrollmentEncounter, encounterClosed)});
+  //console.log({transfered: isTransfered(lastEnrollmentEncounter, encounterClosed)});
   
   if(patientIsTranfered){
     warning_message = "Ce patient a été transféré à : "+ transfered.value;

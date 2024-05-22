@@ -110,8 +110,8 @@ export function BiologicalOrderPatientOrderUiOrderForm({
     true
   );
 
-  const defaultProvider = providerSelect?.find((p) => p.value === ENCOUNTER_PROVIDER_DEFAULT)
-console.log({defaultProvider: defaultProvider});
+  //const defaultProvider = providerSelect?.find((p) => p.value === ENCOUNTER_PROVIDER_DEFAULT)
+  //console.log({defaultProvider: defaultProvider});
 
   const { concept, isLoading } = useFindConcept(
     Concepts.ARV_REGIMEN,
@@ -376,9 +376,7 @@ console.log({defaultProvider: defaultProvider});
           gap={{ base: 'sm', sm: 'lg' }}
           justify={{ sm: 'space-between' }}>
       
-      <Text p={'xs'} color={'cyan'} weight={'bold'}>
-        Formulaire de demande de charge virale
-      </Text>
+      <Text></Text>
       { patient && patient.identifiers[1] ?(
          <Text p={'xs'} color={'cyan'} weight={'bold'}>
          UPID : {upid}
@@ -386,13 +384,9 @@ console.log({defaultProvider: defaultProvider});
       )
        : ""
       }
-      
-    
-    
     </Flex>
-         
           <Divider />
-          <Paper m={'xs'} withBorder p={'xs'} color={'gray'}>
+          <Paper ml={'0'} mr={'0'} color={'gray'}>
             <OrderForm
               form={form}
               patient={patient}

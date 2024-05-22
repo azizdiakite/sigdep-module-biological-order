@@ -32,7 +32,6 @@ const obsStyle = createStyles({
     },
     '& tr': {
       width: '100%',
-
       border: 0,
     },
     '& tbody  tr  td ': {
@@ -40,6 +39,7 @@ const obsStyle = createStyles({
       borderBottom: 0,
     },
   },
+
 });
 
 export interface ObsInputProps {
@@ -64,6 +64,8 @@ export interface ObsInputProps {
   readOnly?: boolean;
   variant?: string;
   data?: SelectItem[];
+  className?: any;
+
   // defaultValue?: string | boolean | Date;
 }
 
@@ -86,6 +88,7 @@ export function ObsInput({
   readOnly,
   variant,
   data,
+  className
 }: // defaultValue,
 ObsInputProps) {
   const [innerValue, setInnerValue] = useState<any>(undefined);
@@ -166,6 +169,7 @@ ObsInputProps) {
         label={label}
         {...form.getInputProps(name)}
         disabled={disabled}
+        style={style}
         onClick={() => {
           setIsChanged(true);
         }}
@@ -188,6 +192,7 @@ ObsInputProps) {
         }}
         orientation={radioVertical && 'vertical'}
         spacing="xs"
+        style={style}
       >
         {children}
       </Radio.Group>
@@ -260,6 +265,7 @@ ObsInputProps) {
         readOnly={readOnly}
         variant={variant}
         styles={style}
+        className={className}
       >
         {form.values[name]}
       </Textarea>
@@ -296,6 +302,7 @@ ObsInputProps) {
         // onBlur={() => setInnerValue(form.values[name])}
         style={style}
         readOnly={readOnly}
+        className={className}
         onClick={() => setInnerValue(form.values[name])}
         onBlurCapture={() => setIsChanged(true)}
         variant={variant}

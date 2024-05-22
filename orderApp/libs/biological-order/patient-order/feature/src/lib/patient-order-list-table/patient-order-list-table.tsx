@@ -2,18 +2,28 @@ import { Encounter, Obs } from '@spbogui-openmrs/shared/model';
 import { ColumnDef } from '@tanstack/react-table';
 import { Button, Group, Text,Tooltip } from '@mantine/core';
 import dayjs from 'dayjs';
-import { IconChecks, IconClockHour7, IconEye, IconFileInvoice, IconTrash } from '@tabler/icons';
-import { Link } from 'react-router-dom';
+import { IconBookOff, IconBugOff, IconChecks, IconClockCancel, IconClockHour7, IconEye, IconFileInvoice, IconForbid, IconForbid2, IconHomeCancel, IconNoteOff, IconPlayerEject, IconSquareForbid, IconTrash } from '@tabler/icons';
+import { Link, useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
-import { CustomTable, useRemoveEncounter } from '@spbogui-openmrs/shared/ui';
-import { Concepts, FulfillerStatus, notification } from '@spbogui-openmrs/shared/utils';
+import { CustomTable, useFindFilteredEncounter, useRemoveEncounter } from '@spbogui-openmrs/shared/ui';
+import { Concepts, EncounterType, FulfillerStatus, customEncounterParams, notification } from '@spbogui-openmrs/shared/utils';
 import { openConfirmModal } from '@mantine/modals';
 import { EncounterService } from '@spbogui-openmrs/shared/service';
+import invariant from 'invariant';
 
 /* eslint-disable-next-line */
 export interface PatientOrderListTableProps {
   orders: Encounter[];
 }
+//const [currentEncounter, setCurrentEncounter] = useState(o);
+/*const { patientId } = useParams();
+invariant(patientId, '');
+*/
+/*useEffect(() => {
+  let { encounter } = useFindFilteredEncounter(patientId ,EncounterType.REQUEST_EXAM ,customEncounterParams ,'' ,'' ,true);
+  setCurrentEncounter(encounter);
+}, []);*/
+
 const openModal = (id : string ) => openConfirmModal({
   title: 'Confirmation',
   centered: false,
@@ -59,6 +69,18 @@ const cols: ColumnDef<Encounter>[] = [
     },
   },
   {
+    id: 'createDate',
+    header: 'Date de creation',
+    accessorFn: (data) => data.dateCreated,
+    cell: ({ getValue }) => {
+      return (
+        <Text style={{ textAlign: 'left' }} size={'sm'}>
+          {!!getValue() && dayjs(getValue<Date>()).format('DD/MM/YYYY HH:MM')}
+        </Text>
+      );
+    },
+  }, 
+  {
     id: 'reason',
     header: 'Motif de la demande',
     accessorFn: (data) => data.obs.find((o) => o.concept.uuid === Concepts.REASON_FOR_VIRAL_LOAD_REQUEST),
@@ -89,7 +111,7 @@ const cols: ColumnDef<Encounter>[] = [
       }else if(value === "progress") {
         return <Text display={'flex'}> En cours <IconClockHour7 color={'orange'} /> </Text>;
       }else if(value === "cancelled") {
-        return <Text display={'flex'}> Annuler <IconClockHour7 color={'orange'} /> </Text>;
+        return <Text display={'flex'}> Annuler <IconClockCancel color={'gray'} /> </Text>;
       }else{
         return <Text display={'flex'}> Non soumis <IconClockHour7 color={'red'} /> </Text>;
       }
@@ -196,8 +218,8 @@ export function PatientOrderListTable({ orders }: PatientOrderListTableProps) {
 
   async function getEncountersSortedByDateDesc(encounters:Encounter[]): Promise<any[]> {
     return encounters.sort((a, b) => {
-        const dateA = new Date(a.encounterDatetime).getTime();
-        const dateB = new Date(b.encounterDatetime).getTime();
+        const dateA = new Date(a.dateCreated).getTime();
+        const dateB = new Date(b.dateCreated).getTime();
         return dateB - dateA;
     });
 }

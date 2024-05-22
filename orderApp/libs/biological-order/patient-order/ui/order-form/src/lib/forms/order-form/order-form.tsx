@@ -11,7 +11,10 @@ import {
   Table,
   Text,
   useMantineTheme,
-  Alert
+  Alert,
+  Card,
+  Title,
+  BackgroundImage,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
@@ -24,7 +27,6 @@ import { ObsInput } from '@spbogui-openmrs/shared/ui';
 import { Concepts } from '@spbogui-openmrs/shared/utils';
 import { openConfirmModal } from '@mantine/modals';
 import { useFindLatestObs } from '../../use-find-latest-obs/use-find-latest-obs';
-
 export const styles = createStyles((theme) => ({
   table: {
     // borderBottomColor: theme.colors.gray[3],
@@ -36,6 +38,9 @@ export const styles = createStyles((theme) => ({
       borderColor: theme.colors.gray[3],
       borderWidth: 1,
     },
+  },
+  inValues : {
+    backgroundColor: theme.colors.red[3]
   }
 }));
 
@@ -93,7 +98,7 @@ export function OrderForm({
     title: 'Confirmation',
     centered: true,
     children: (
-      <Text size="sm">
+      <Text size="md">
         Etes vous sur de vouloir continuer ?
        </Text>
     ),
@@ -124,26 +129,34 @@ export function OrderForm({
             {"Patient transféré à : "+ transfered?.value}
           </Alert>): ''}
 
-        <Container id='print'  style={{
+        <Container fluid id='print'  
+        style={{
         border: patient.person.dead || isTransfered  ? '2px solid #ffe3e3': 'none', // Exemple de bordure de 2px solide rouge
-        borderRadius: '8px', // Exemple de bord arrondi
+        backgroundColor: theme.colors.gray[1],
       }}>
-          <Text size={'lg'} mb={'lg'} weight={'bold'} color={'cyan.6'}>
-            DONNEES PATIENT
-             { /*JSON.stringify(form.values.latestViralLoadLaboratory) */}
-          </Text>
+        <Card.Section mb={20}>
+          <Title color={'cyan'} align="center"> FORMULAIRE DE DEMANDE DE CHARGE VIRALE</Title>
+        </Card.Section>
+      
+<fieldset>
+      <legend> 
+        <Text size={'lg'} mb={'lg'} weight={'bold'} color={'cyan.6'}>IDENTITE DU PATIENT</Text>
+        </legend>
+
+          { /*JSON.stringify(form.values.latestViralLoadLaboratory) */}
+
           <Group mb={'xs'}>
-            <Text size={'sm'}>Date de naissance : </Text>
+            <Text size={'md'}>Date de naissance : </Text>
             <Text weight={'bold'}>
               {dayjs(patient.person.birthdate).format('DD/MM/YYYY')}
             </Text>
           </Group>
           <Group mb={'xs'}>
-            <Text size={'sm'}>Age : </Text>
+            <Text size={'md'}>Age : </Text>
             <Text weight={'bold'}>{patient.person.age}</Text>
             <Space />
             <Space />
-            <Text size={'sm'}>Sexe : </Text>
+            <Text size={'md'}>Sexe : </Text>
             <Text>Masculin</Text>{' '}
             {patient.person.gender === 'M' ? (
               <IconCircle strokeWidth={6} color={'#00abfb'} size={20} />
@@ -166,7 +179,7 @@ export function OrderForm({
           {patient.person.gender === 'F'  &&(
             <Group>
               <Group>
-                <Text size={'sm'} pb={'xs'}>
+                <Text size={'md'} pb={'xs'}>
                   Grossesse :
                 </Text>
                 <ObsInput
@@ -177,18 +190,18 @@ export function OrderForm({
                   readOnly>
 
                   <Group>
-                    <Text size={'sm'} pb={'xs'}>
+                    <Text size={'md'} pb={'xs'}>
                       Oui :{' '}
                     </Text>
                     <Radio value={Concepts.YES} />
-                    <Text size={'sm'} pb={'xs'}>
+                    <Text size={'md'} pb={'xs'}>
                       Non :{' '}
                     </Text>
                     <Radio value={Concepts.NO} />
                   </Group>
                   </ObsInput>
               </Group>
-              {/* <Text size={'sm'}>Grossesse : </Text>
+              {/* <Text size={'md'}>Grossesse : </Text>
               {patient.person.gender === 'F' ? <IconSquareX /> : <IconSquare />}
               <Space /> */}
               <Space /> 
@@ -197,7 +210,7 @@ export function OrderForm({
               <Space />
               <Space />
               <Group>
-                <Text size={'sm'} pb={'xs'}>
+                <Text size={'md'} pb={'xs'}>
                   Allaitement :{' '}
                 </Text>
                 <ObsInput
@@ -208,11 +221,11 @@ export function OrderForm({
                   readOnly
                 >
                   <Group>
-                    <Text size={'sm'} pb={'xs'}>
+                    <Text size={'md'} pb={'xs'}>
                       Oui :{' '}
                     </Text>
                     <Radio value={Concepts.YES} />
-                    <Text size={'sm'} pb={'xs'}>
+                    <Text size={'md'} pb={'xs'}>
                       Non :{' '}
                     </Text>
                     <Radio value={Concepts.NO} />
@@ -220,17 +233,21 @@ export function OrderForm({
                   </ObsInput>
               </Group>
 
-              {/* <Text size={'sm'}>Allaitement : </Text>
+              {/* <Text size={'md'}>Allaitement : </Text>
               decede : 7707/YF/14/00055
               transferer : 7707/YF/12/00025	
               {patient.person.gender === 'M' ? <IconSquareX /> : <IconSquare />} */}
             </Group>
           )}
-          <Text size={'lg'} my={'lg'} weight={'bold'} color={'cyan.6'}>
-            DONNEES CLINIQUES
-          </Text>
+          </fieldset>
+
+      <fieldset>
+       <legend> 
+        <Text size={'lg'} mb={'lg'} weight={'bold'} color={'cyan.6'}> DONNEES CLINIQUES</Text>
+        </legend>  
+    
           <Group>
-            <Text size={'sm'}>Type de VIH : <span style={{ color: theme.colors.red[8] }}>*</span> </Text>
+            <Text size={'md'}>Type de VIH : <span style={{ color: theme.colors.red[8] }}>*</span> </Text>
             <Space />
             <Space />
             <Space />
@@ -241,17 +258,17 @@ export function OrderForm({
               name={'hivType'}
             >
               <Group>
-                <Text size={'sm'} pb={'xs'}>
+                <Text size={'md'} pb={'xs'}>
                   VIH-1 :
                 </Text>
                 <Radio value={Concepts.VIH_1} />
 
-                <Text size={'sm'} pb={'xs'}>
+                <Text size={'md'} pb={'xs'}>
                   VIH-2 :
                 </Text>
                 <Radio value={Concepts.VIH_2} />
 
-                <Text size={'sm'} pb={'xs'}>
+                <Text size={'md'} pb={'xs'}>
                   VIH-1 et VIH-2 :{' '}
                 </Text>
                 <Radio value={Concepts.VIH_1_2} />
@@ -259,7 +276,7 @@ export function OrderForm({
             </ObsInput>
           </Group>
           <Group>
-            <Text size={'sm'}>Le patient est-il actuellement sous ARV ?  <span style={{ color: theme.colors.red[8] }}>*</span></Text>
+            <Text size={'md'}>Le patient est-il actuellement sous ARV ?  <span style={{ color: theme.colors.red[8] }}>*</span></Text>
             <ObsInput
               concept={Concepts.STARTED_ARV_TREATMENT}
               name="isOnTreatment"
@@ -267,11 +284,11 @@ export function OrderForm({
               type={'radio'}
             >
               <Group>
-                <Text size={'sm'} pb={'xs'}>
+                <Text size={'md'} pb={'xs'}>
                   Oui
                 </Text>
                 <Radio value={'true'} />
-                <Text size={'sm'} pb={'xs'}>
+                <Text size={'md'} pb={'xs'}>
                   Non
                 </Text>
                 <Radio value={"false"} />
@@ -279,7 +296,7 @@ export function OrderForm({
             </ObsInput>
           </Group>
           <Group>
-            <Text size={'sm'}>
+            <Text size={'md'}>
               Si oui, Année initiation 1er traitement ARV{' '}
             </Text>
             <ObsInput
@@ -288,13 +305,13 @@ export function OrderForm({
               concept={Concepts.ARV_START_DATE}
               readOnly={true}
               placeholder="......"
-              variant={'unstyled'}
+              //variant={'unstyled'}
               maxDate={currentDate}
               type='date'
             />
           </Group>
           <Group>
-            <Text size={'sm'}>Ligne thérapeutique :  <span style={{ color: theme.colors.red[8] }}>*</span></Text>
+            <Text size={'md'}>Ligne thérapeutique :  <span style={{ color: theme.colors.red[8] }}>*</span></Text>
             <ObsInput
               name="regimeLine"
               concept={Concepts.ANTI_RETRO_TREATMENT_LINE}
@@ -302,7 +319,7 @@ export function OrderForm({
               type={'radio'}
             >
               <Group>
-                <Text size={'sm'} pb={'xs'}>
+                <Text size={'md'} pb={'xs'}>
                   1
                   <sup>
                     <small>ère</small>
@@ -311,7 +328,7 @@ export function OrderForm({
                 </Text>
                 <Radio value={Concepts.FIRST_TREATMENT_LINE} />
                 <Space />
-                <Text size={'sm'} pb={'xs'}>
+                <Text size={'md'} pb={'xs'}>
                   2
                   <sup>
                     <small>ème</small>
@@ -320,7 +337,7 @@ export function OrderForm({
                 </Text>
                 <Radio value={Concepts.SECOND_TREATMENT_LINE} />
                 <Space />
-                <Text size={'sm'} pb={'xs'}>
+                <Text size={'md'} pb={'xs'}>
                   3
                   <sup>
                     <small>ème</small>
@@ -328,7 +345,7 @@ export function OrderForm({
                   Ligne:
                 </Text>
                 <Radio value={Concepts.THIRD_TREATMENT_LINE} />
-                <Text size={'sm'} pb={'xs'}>
+                <Text size={'md'} pb={'xs'}>
                   Autre ligne:
                 </Text>
                 <Radio value={Concepts.OTHER} />
@@ -342,28 +359,22 @@ export function OrderForm({
               </Group>
             </ObsInput>
           </Group>
-          <Group mb={'sm'}>
-            <Text size={'sm'}>Régime thérapeutique : <span style={{ color: theme.colors.red[8] }}>*</span></Text>
+          <Group mb={'md'}>
+            <Text size={'md'}>Régime thérapeutique : <span style={{ color: theme.colors.red[8] }}>*</span></Text>
             <ObsInput
               form={form}
               name={'regime'}
               concept={Concepts.ARV_REGIMEN}
               data={regimenList}
-              style={{color: form.values.regime ? "#F59E00": "#dc3545"}}
-              {...(form.values.regime != undefined ? {readOnly: true}: {} )}
+              readOnly
               type={'select'}
               placeholder={'.........................................'}
-              variant={'unstyled'}
-             //style={{ width: '70%' }}
+             // variant={'unstyled'}
             />
-            {/* <Select
-              data={[]}
-              // value={'ok'}
-            /> */}
           </Group>
-          <Paper withBorder p={'xs'}>
-          <Group mb={'sm'}>
-            <Text  size={'sm'} weight="bold" underline>
+          <Paper  p={'xs'} bg={theme.colors.gray[1]}>
+          <Group mb={'md'}>
+            <Text  size={'md'} weight="bold" underline>
               Motif de la demande de la CV
             </Text>
             <ObsInput
@@ -373,7 +384,7 @@ export function OrderForm({
               type={'radio'}
             >
               <Group pt={'xs'}>
-                <Text size={'sm'} pb={5}>
+                <Text size={'md'} pb={5}>
                   CV contrôle sous ARV
                 </Text>
                 <Radio
@@ -381,7 +392,7 @@ export function OrderForm({
                   value={Concepts.CONTROL_VIRAL_LOAD}
                 />
                 <Space />
-                <Text size={'sm'} pb={5}>
+                <Text size={'md'} pb={5}>
                   Échec virologique
                 </Text>
                 <Radio
@@ -389,7 +400,7 @@ export function OrderForm({
                   value={Concepts.VIROLOGIC_FAILURE}
                 />
                 <Space />
-                <Text size={'sm'} pb={5}>
+                <Text size={'md'} pb={5}>
                   Échec immunologique
                 </Text>    
                 <Radio
@@ -398,7 +409,7 @@ export function OrderForm({
                 />
                 
                 <Space />
-                <Text size={'sm'} pb={8}>
+                <Text size={'md'} pb={8}>
                   Échec clinique
                 </Text>
                 <Radio
@@ -408,13 +419,10 @@ export function OrderForm({
               </Group>
             </ObsInput>
             </Group>
-            <Group mb={'sm'}>
-            <Text size={'sm'} pb={5}>
-                  Autres (à préciser)
-                </Text>
+            <Group mb={'md'}>
+            <Text size={'md'} pb={5}>Autres (à préciser)</Text>
             <ObsInput
                   style={{ width: '20%' }}
-                  variant="unstyled"
                   placeholder={
                     '..................................................................'
                   }
@@ -424,91 +432,95 @@ export function OrderForm({
                 />
             </Group>
           </Paper>
-
+          </fieldset>
+          <fieldset>
           <Grid my={'md'} pl={'lg'}>
             <Grid.Col span={6} p={'lg'}>
-              <Text size={'sm'} weight={'bold'} underline mb={'sm'}>
+              <Text size={'md'} weight={'bold'} underline mb={'md'}>
                 A l'initiation du traitement
               </Text>
-              <Group>
-                <Text size={'sm'}>CD4 valeur absolue :</Text>
-                <ObsInput
+              <Table>
+              <tr>
+                <td><Text size={'md'}>CD4 valeur absolue :</Text></td>
+                <td><ObsInput
                   form={form}
-                  type={'number'}
+                  //type={'number'}
                   name={'initialCd4Absolute'}
                   concept={Concepts.INNITIAL_CD4_COUNT}
-                  {...(form.values.initialCd4Absolute != undefined ? {readOnly: true}: {} )}
-                  variant="unstyled"
+                  //{...(form.values.initialCd4Absolute != undefined ? {readOnly: true}: {} )}
                   placeholder={'.........................................'}
-                />
-              </Group>
-              <Group>
-                <Text size={'sm'}>CD4 pourcentage :</Text>
-                <ObsInput
+                  readOnly={true}
+                /></td>
+              </tr>
+              <tr>
+                <td><Text size={'md'}>CD4 pourcentage :</Text></td>
+                <td><ObsInput
                   form={form}
                   name={'initialCd4Percentage'}
                   concept={Concepts.INNITIAL_CD4_PERCENT}
                   {...(form.values.initialCd4Percentage != undefined ? {readOnly: true}: {} )}
-                  variant="unstyled"
+                  readOnly={true}
                   placeholder={'.........................................'}
-                  
-                />
-              </Group>
-              <Group>
-                <Text size={'sm'}>Date :</Text>
-                <ObsInput
+                /> </td>
+              </tr>
+              <tr>
+                <td><Text size={'md'}>Date :</Text></td>
+                <td> <ObsInput
                   form={form}
                   name={'initialCd4Date'}
                   concept={Concepts.INNITIAL_CD4_DATE}
-                  variant="unstyled"
-                  {...(form.values.initialCd4Date != undefined ? {readOnly: true}: {} )}
+                  readOnly={true}
+                  //{...(form.values.initialCd4Date != undefined ? {readOnly: true}: {} )}
                   placeholder={'__/__/____'}
                   type={'date'}
-                />
-              </Group>
+                /> </td>
+              </tr>
+          </Table>
+              
             </Grid.Col>
             <Grid.Col span={6} p={'lg'}>
-              <Text size={'sm'} weight={'bold'} underline mb={'sm'}>
+              <Text size={'md'} weight={'bold'} underline mb={'md'}>
                 A la demande de Charge virale
               </Text>
-              <Group>
-                <Text size={'sm'}>CD4 valeur absolue :</Text>
-                <ObsInput
+              <Table>
+                <tr>
+                  <td><Text size={'md'}>CD4 valeur absolue :</Text></td>
+                  <td><ObsInput
                   form={form}
                   name={'latestCd4Absolute'}
                   concept={Concepts.LATE_CD4_COUNT}
                   readOnly={true}
-                  variant="unstyled"
                   placeholder={'.........................................'}
-                />
-              </Group>
-              <Group>
-                <Text size={'sm'}>CD4 pourcentage :</Text>
-                <ObsInput
+                /></td>
+                </tr>
+                <tr>
+                  <td><Text size={'md'}>CD4 pourcentage :</Text></td>
+                  <td><ObsInput
                   form={form}
                   name={'latestCd4Percentage'}
                   concept={Concepts.LATE_CD4_PERCENT}
                   readOnly={true}
-                  variant="unstyled"
                   placeholder={'.........................................'}
-                />
-              </Group>
-              <Group>
-                <Text size={'sm'}>Date :</Text>
-                <ObsInput
+                /></td>
+                </tr>
+                <tr>
+                  <td><Text size={'md'}>Date :</Text></td>
+                  <td> <ObsInput
                   form={form}
                   name={'latestCd4Date'}
                   concept={Concepts.LATE_CD4_DATE}
-                  variant="unstyled"
-                  {...(form.values.latestCd4Date != undefined ? {readOnly: true}: {} )}
+                //  variant="unstyled"
+                  //{...(form.values.latestCd4Date != undefined ? {readOnly: true}: {} )}
                   placeholder={'__/__/____'}
+                  readOnly={true}
                   type={'date'}
-                />
-              </Group>
+                /></td>
+                </tr>
+              </Table>
             </Grid.Col>
           </Grid>
           <Group>
-            <Text size={'sm'}>
+            <Text size={'md'}>
               Le patient a-t-il déjà bénéficié d’une mesure de charge virale ? <span style={{ color: theme.colors.red[8] }}>*</span>
             </Text>
             <ObsInput
@@ -519,11 +531,11 @@ export function OrderForm({
               type={'radio'}
             >
               <Group>
-                <Text size={'sm'} pb={'xs'}>
+                <Text size={'md'} pb={'xs'}>
                   Oui :{' '}
                 </Text>
                 <Radio value={Concepts.YES} />
-                <Text size={'sm'} pb={'xs'}>
+                <Text size={'md'} pb={'xs'}>
                   Non :{' '}
                 </Text>
                 <Radio value={Concepts.NO} />
@@ -532,41 +544,44 @@ export function OrderForm({
           </Group>
         
             <Group>
-            <Text size={'sm'}>Si oui,</Text>
-            <Text size={'sm'}>Valeur : </Text>
+            <Text size={'md'}>Si oui, Valeur : </Text>
             <ObsInput
               form={form}
+              style={{ width: '20%' }}
               name={'latestViralLoad'}
               concept={Concepts.LAST_VIRAL_LOAD}
-              variant="unstyled"
-              type='text'
-              placeholder={'........................................................'}
+             // variant="unstyled"
+              placeholder={'......................................................'}
+              readOnly
             />
-          <Text size={'sm'}>préciser le laboratoire : </Text>
+          <Text size={'md'}>préciser le laboratoire : </Text>
           <ObsInput
             form={form}
             name={'latestViralLoadLaboratory'}
             concept={Concepts.LAST_VIRAL_LOAD_LABORATORY}
-            variant="unstyled"
-         //   readOnly={form.values.latestViralLoadLaboratory ? true: false}
+            //variant="unstyled"
+            // readOnly={form.values.latestViralLoadLaboratory ? true: false}
          readOnly
             placeholder={'......................................................'}
               />
-          </Group>
-          <Group>
-          <Text size={'sm'}>Date </Text>
+
+<Text size={'md'}>Date </Text>
             <ObsInput
               form={form}
               name={'latestViralLoadDate'}
               concept={Concepts.LAST_VIRAL_LOAD_DATE}
-              variant="unstyled"
+             // variant="unstyled"
               placeholder={'__/__/____'}
               {...(form.values.latestViralLoadDate != undefined ? {readOnly: true}: {} )}
               type={'date'}
               readOnly
             />
           </Group>
-          <Text
+    
+          </fieldset>
+    <fieldset >
+       <legend> 
+       <Text
             size={'lg'}
             my={'lg'}
             weight={'bold'}
@@ -575,101 +590,104 @@ export function OrderForm({
           >
             Identification du prélèvement
           </Text>
-          <Paper withBorder>
+        </legend>  
+          
+          <Paper  bg={theme.colors.gray[1]}>
             <Table className={classes.table}>
               <tbody>
                 <tr>
                   <td>
-                    <Group mb={'xs'}>
-                      <Text size={'sm'}>Nom du clinicien  <span style={{ color: theme.colors.red[8] }}>*</span></Text>
-                      <Select
+                  <Table className={classes.table}>
+                    <tr>
+                      <td><Text size={'md'}>Nom du clinicien  <span style={{ color: theme.colors.red[8] }}>*</span></Text></td>
+                      <td> <Select
                         searchable
                         data={providers}
-                        variant={'unstyled'}
+                       // variant={'unstyled'}
                         {...form.getInputProps(
                           'encounter.encounterProviders.0.provider'
                         )}
-                      />
-                    </Group>
-                    <Group mb={'xs'}>
-                      <Text size={'sm'}>Date de la demande de l'analyse  <span style={{ color: theme.colors.red[8] }}>*</span></Text>
-                      <ObsInput
+                      /></td>
+                    </tr>
+                    <tr>
+                      <td><Text size={'md'}>Date de la demande de l'analyse  <span style={{ color: theme.colors.red[8] }}>*</span></Text></td>
+                      <td><ObsInput
                         concept={Concepts.VIRAL_LOAD_REQUEST_DATE}
-                        variant="unstyled"
+                       // variant="unstyled"
                         placeholder={'__/__/____'}
                         form={form}
                         name={'requestDate'}
                         type={'date'}
                         readOnly
-                      />
-                    </Group>
-
-                    <Group mb={'xs'}>
-                      <Text size={'sm'}>N° Tel clinicien</Text>
-                      <ObsInput
+                      /></td>
+                    </tr>
+                    <tr>
+                      <td><Text size={'md'}>N° Tel clinicien</Text></td>
+                      <td><ObsInput
                         concept={Concepts.CLINICIAN_PHONE_NUMBER}
-                        variant="unstyled"
-                        placeholder={'.....................................'}
+                        //variant="unstyled"
+                        placeholder={'N° Tel clinicien'}
                         form={form}
                         name={'clinicianPhoneNumber'}
                         type={'number'}
-                      />
-                    </Group>
-                    <Group mb={'xs'}>
-                      <Text size={'sm'}>E-mail clinicien</Text>
-                      <ObsInput
+                      /></td>
+                    </tr>
+                    <tr>
+                      <td><Text size={'md'}>E-mail clinicien</Text></td>
+                      <td><ObsInput
                         concept={Concepts.CLINICAL_EMAIL}
-                        variant="unstyled"
-                        placeholder={'.....................................'}
+                       // variant="unstyled"
+                        placeholder={'Email du clinicien'}
                         form={form}
                         name={'clinicianEmail'}
-                        type={'text'}
-                      />
-                    </Group>
+                       // type={'text'}
+                      /></td>
+                    </tr>
+                  </Table>
+                  
                   </td>
                   <td>
-                    <Group mb={'xs'}>
-                      <Text size={'sm'}>Nom du préleveur  <span style={{ color: theme.colors.red[8] }}>*</span></Text>
-                      <Select
+
+                    <Table>
+                      <tr>
+                        <td><Text size={'md'}>Nom du préleveur  <span style={{ color: theme.colors.red[8] }}>*</span></Text></td>
+                        <td><Select
                         data={providers}
                         searchable
-                        variant={'unstyled'}
+                        //variant={'unstyled'}
                         {...form.getInputProps(
                           'encounter.encounterProviders.1.provider'
                         )}
-                      />
-                    </Group>
-                    <Group mb={'xs'}>
-                      <Text size={'sm'}>Date du prélèvement  <span style={{ color: theme.colors.red[8] }}>*</span></Text>
-                      <DatePicker
-                        variant="unstyled"
+                      /></td>
+                      </tr>
+                      <tr>
+                        <td><Text size={'md'}>Date du prélèvement  <span style={{ color: theme.colors.red[8] }}>*</span></Text></td>
+                        <td> <DatePicker
                         icon={<IconCalendar />}
+                        style={{ color :theme.colors.red[8], fontWeight: 'bold'}}
                         locale="fr"
                         inputFormat="DD/MM/YYYY"
                         minDate={futureDate}
                         maxDate={new Date()}
+                        readOnly
                         placeholder={'__/__/____'}
                         {...form.getInputProps('encounter.encounterDatetime')}
-                        readOnly
-                      />
-                    </Group>
-                    
-                    <Group mb={'xs'}>
-                      <Text size={'sm'}>Heure du prélèvement</Text>
-                      <ObsInput
+                      /></td>
+                      </tr>
+                      <tr>
+                        <td><Text size={'md'}>Heure du prélèvement</Text></td>
+                        <td><ObsInput
                         concept={Concepts.VIRAL_LOAD_REQUEST_TIME}
-                        variant="unstyled"
                         placeholder={'__/__/____'}
                         form={form}
                         name={'encounterTime'}
                         type={'time'}
                         readOnly
-                      />
-                    </Group>
-                    <Group mb={'xs'} >
-                      <Text size={'sm'} >Type de prélèvement  <span style={{ color: theme.colors.red[8] }}>*</span></Text>
-
-                      <ObsInput
+                      /></td>
+                      </tr>
+                      <tr>
+                        <td><Text size={'md'} >Type de prélèvement  <span style={{ color: theme.colors.red[8] }}>*</span></Text></td>                   
+                        <td><ObsInput
                         type={'select'}
                         form={form}
                         name={'collectionType'}
@@ -688,14 +706,18 @@ export function OrderForm({
                             label: 'PSC',
                           },
                         ]}
-                        variant={'unstyled'}
-                      />
-                    </Group>
+                      /></td>
+                      </tr>
+                    </Table>
+                   
                   </td>
                 </tr>
               </tbody>
             </Table>
+            
           </Paper>
+    </fieldset>
+
           {/* {JSON.stringify(form.values.encounter)}  */}
           {/* {JSON.stringify(form.errors)}   */}
         </Container>
