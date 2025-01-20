@@ -34,13 +34,13 @@ public class OrderResultEventListener implements EventListener {
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	private static final String HIV_VIRAL_LOAD_UUID = "CI0050051AAAAAAAAAAAAAAAAAAAAAAAAAAA";
-	private static final String concept_viralLoadLog = "164596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-	private static final String concept_viralLoadQualitative = "1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-	private static final String concept_detectable = "1301AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-	private static final String concept_undetectabe = "1306AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-	private static final String concept_viralLoad = "856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-	private static final String concept_accessionNumber = "162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-	private static final String concept_released_date = "CI0050052AAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	private static final String CONCEPT_VIRALLOADLOG = "164596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	private static final String CONCEPT_VIRAL_LOAD_QUALITATIVE = "1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	private static final String CONCEPT_DETECTABLE = "1301AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	private static final String CONCEPT_UNDETECTABE = "1306AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	private static final String CONCEPT_VIRALLOAD = "856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	private static final String CONCEPT_ACCESSIONNUMBER = "162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	private static final String CONCEPT_RELEASED_DATE = "CI0050052AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 	private static final String FORM_UUID = "2db4f47f-8d19-4740-acea-fc8feb585b7a";
 	private static final String CLINICIAN_ROLE_UUID = "d67a9eba-2ddd-42b5-814c-b39836536cce";
@@ -128,25 +128,25 @@ public class OrderResultEventListener implements EventListener {
 				System.out.println(e.getMessage());
 			}
 
-			Obs viralLoad = createObs(getConceptByUuid(concept_viralLoad));
+			Obs viralLoad = createObs(getConceptByUuid(CONCEPT_VIRALLOAD));
 			viralLoad.setValueNumeric(isDoubleValue ? grossViralLoadInDouble : 49);
 
-			Obs viralLoadQualitative = createObs(getConceptByUuid(concept_viralLoadQualitative));
-			viralLoadQualitative.setValueCoded(isDoubleValue ? getConceptByUuid(concept_detectable) : getConceptByUuid(concept_undetectabe));
+			Obs viralLoadQualitative = createObs(getConceptByUuid(CONCEPT_VIRAL_LOAD_QUALITATIVE));
+			viralLoadQualitative.setValueCoded(isDoubleValue ? getConceptByUuid(CONCEPT_DETECTABLE) : getConceptByUuid(CONCEPT_UNDETECTABE));
 
-			Obs viralLoadLog = createObs(getConceptByUuid(concept_viralLoadLog));
+			Obs viralLoadLog = createObs(getConceptByUuid(CONCEPT_VIRALLOADLOG));
 			if (isDoubleValue) {
 				double finalValue = Math.round((Math.log(grossViralLoadInDouble) / Math.log(10)) * 100.0) / 100.0;
 				viralLoadLog.setValueNumeric(finalValue);
 			}
 
-			Obs accessionNumber = createObs(getConceptByUuid(concept_accessionNumber));
+			Obs accessionNumber = createObs(getConceptByUuid(CONCEPT_ACCESSIONNUMBER));
 			accessionNumber.setValueText(obs.getEncounter().getOrders().iterator().next().getAccessionNumber());
 
 			Obs grossViralLoad = createObs(getConceptByUuid(HIV_VIRAL_LOAD_UUID));
 			grossViralLoad.setValueText(obs.getValueText());
 
-			Obs releasedDate = createObs(getConceptByUuid(concept_released_date));
+			Obs releasedDate = createObs(getConceptByUuid(CONCEPT_RELEASED_DATE));
 			releasedDate.setValueDatetime(obs.getObsDatetime());
 
 			Encounter encounterSaved = createEncounter();
