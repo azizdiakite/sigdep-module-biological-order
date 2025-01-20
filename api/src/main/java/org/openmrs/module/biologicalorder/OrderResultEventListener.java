@@ -33,13 +33,13 @@ public class OrderResultEventListener implements EventListener {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	private static final int HIV_VIRAL_LOAD_ID = 165275;
+	private static final String HIV_VIRAL_LOAD_UUID = "CI0050051AAAAAAAAAAAAAAAAAAAAAAAAAAA";
 		
-	private static final Integer FORM_ID = 5;
-	
-	private static final int ENCOUNTER_TYPE_ID = 8;
-	
-	private static final int REQUEST_EXAM_ID = 20;
+	private static final String FORM_UUID = "2db4f47f-8d19-4740-acea-fc8feb585b7a";
+	private static final String CLINICIAN_ROLE_UUID = "d67a9eba-2ddd-42b5-814c-b39836536cce";
+	private static final String PROVIDER_UUID = "738185ba-eac9-11e5-8f4d-e06995eac916";
+	private static final String BIOLOGICAL_ENCOUNTER_TYPE_UUID = "b2750363-7c00-4ece-bceb-47ab09b8d21b";
+	private static final String REQUEST_EXAM_UUID = "8b51ec84-de51-4090-bcde-b6862dc0e253";
 	
 	private DaemonToken daemonToken;
 	
@@ -108,8 +108,8 @@ public class OrderResultEventListener implements EventListener {
 		boolean isDoubleValue = false;
 		TimeZone.setDefault(TimeZone.getTimeZone("GMT+0"));
 
-		if ((obs.getConcept().getId().compareTo(HIV_VIRAL_LOAD_ID) == 0)
-		        && (obs.getEncounter().getEncounterType().getEncounterTypeId() == REQUEST_EXAM_ID)) {
+		if ((obs.getConcept().getUuid().compareTo(HIV_VIRAL_LOAD_UUID) == 0)
+		        && (obs.getEncounter().getEncounterType().getUuid().compareTo(REQUEST_EXAM_UUID) == 0 )) {
 
 			patient = Context.getPatientService().getPatient(obs.getPersonId());
 			defaultLocation =  Context.getLocationService().getDefaultLocation();
@@ -166,10 +166,10 @@ public class OrderResultEventListener implements EventListener {
 	}
 
 	private Encounter createEncounter() {
-		EncounterType encounterType = new EncounterType(ENCOUNTER_TYPE_ID);
-		Form form = Context.getFormService().getForm(FORM_ID);
-		EncounterRole encounterRole = Context.getEncounterService().getEncounterRole(2);
-		Provider provider = Context.getProviderService().getProvider(1);
+		EncounterType encounterType =Context.getEncounterService().getEncounterTypeByUuid(BIOLOGICAL_ENCOUNTER_TYPE_UUID);
+		Form form = Context.getFormService().getFormByUuid(FORM_UUID);
+		EncounterRole encounterRole = Context.getEncounterService().getEncounterRoleByUuid(CLINICIAN_ROLE_UUID);
+		Provider provider = Context.getProviderService().getProviderByUuid(PROVIDER_UUID);
 		Encounter encounter = new Encounter();
 		encounter.setForm(form);
 		encounter.setPatient(patient);
