@@ -58,6 +58,19 @@ export function PatientSearchForm({
         value={patientIdentifier}
         onChange={setPatientIdentifier}
         placeholder={'Numéro du patient'}
+        size="md"
+        styles={{
+          input: {
+            borderColor: '#228be6',
+            borderWidth: 2,
+            backgroundColor: '#e8f4ff',
+            fontWeight: 500,
+            '&:focus': {
+              borderColor: '#1971c2',
+              backgroundColor: '#fff',
+            },
+          },
+        }}
         style={{ width: '50%' }}
       />
       <Link to={`/patient-order/${patientId ? patientId : ''}`}>

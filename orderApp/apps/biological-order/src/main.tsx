@@ -2,7 +2,7 @@ import * as ReactDOM from 'react-dom/client';
 
 import App from './app/app';
 
-import { BrowserRouter, HashRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { NotificationsProvider } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createEmotionCache, MantineProvider } from '@mantine/core';
@@ -18,7 +18,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <QueryClientProvider client={queryClient}>
-    <MantineProvider withCSSVariables withGlobalStyles>
+    <MantineProvider withCSSVariables>
       <ModalsProvider>
         <NotificationsProvider position="top-right" zIndex={2077}>
           <HashRouter>

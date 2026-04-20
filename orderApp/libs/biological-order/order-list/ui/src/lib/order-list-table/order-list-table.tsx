@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Group, Text, Button ,Space } from '@mantine/core';
+import { Group, Text, Button, Badge } from '@mantine/core';
 import { Encounter, Obs ,Provider} from '@spbogui-openmrs/shared/model';
 import { CustomTable } from '@spbogui-openmrs/shared/ui';
 import { IconEye } from '@tabler/icons';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, FilterFn, Row } from '@tanstack/react-table';
 import { EncounterRole ,Concepts, FulfillerStatus,} from '@spbogui-openmrs/shared/utils';
 
 /* eslint-disable-next-line */
@@ -18,27 +18,27 @@ const cols: ColumnDef<Encounter>[] = [
   {
     id: 'uuid',
     header: 'uuid',
-    accessorFn: (data) => data.uuid,
+    accessorFn: (data) => data?.uuid,
   },
   {
     id: 'patient',
     header: 'patient',
-    accessorFn: (data) => data.patient.uuid,
+    accessorFn: (data) => data?.patient?.uuid,
   },
   {
     id: 'names',
     header: 'Nom',
-    accessorFn: (data) => data.patient.person.names[0].givenName + " "+  data.patient.person.names[0].familyName,
+    accessorFn: (data) => data?.patient?.person?.names[0]?.givenName + " "+  data?.patient?.person?.names[0]?.familyName,
   },
   {
     id: 'identifier',
     header: 'Numéro du patient',
-    accessorFn: (data) => data.patient.identifiers[0]?.identifier,
+    accessorFn: (data) => data?.patient?.identifiers[0]?.identifier,
   },
   {
     id: 'orderDate',
     header: 'Date de la demande',
-    accessorFn: (data) => data.encounterDatetime,
+    accessorFn: (data) => data?.encounterDatetime,
     cell: ({ getValue }) => {
       return (
         <Text style={{ textAlign: 'left' }} size={'sm'}>
@@ -47,14 +47,14 @@ const cols: ColumnDef<Encounter>[] = [
       );
     },
   },
-  {
+ {
     id: 'createDate',
     header: 'Date de creation',
-    accessorFn: (data) => data.dateCreated,
+    accessorFn: (data) => data?.dateCreated,
     cell: ({ getValue }) => {
       return (
         <Text style={{ textAlign: 'left' }} size={'sm'}>
-          {!!getValue() && dayjs(getValue<Date>()).format('DD/MM/YYYY HH:MM')}
+          {!!getValue() && dayjs(getValue<Date>()).format('DD/MM/YYYY HH:mm')}
         </Text>
       );
     },
@@ -62,52 +62,66 @@ const cols: ColumnDef<Encounter>[] = [
   {
     id: 'status',
     header: 'Statut de la demande',
-    //accessorFn: (data) => (data?.orders[0]?.fulfillerStatus == EXCEPTION) && (data?.orders[0]?.accessionNumber == "") ? 'Réjeté' : (data.obs.find((o) => o.concept.uuid === Concepts.GROSS_HIV_VIRAL_LOAD)?.value?"Réalisé" :"En cours"),
-    accessorFn: (data ) => (
-      data?.orders[0]?.fulfillerStatus === FulfillerStatus.EXCEPTION && data?.orders[0]?.fulfillerComment !== FulfillerStatus.CANCELLED
-      ? 'Réjeté'
+    filterFn: 'equals', // Vous pouvez personnaliser cela si nécessaire
+    accessorFn: (data ) => (      
+      data?.orders[0]?.fulfillerStatus === FulfillerStatus.EXCEPTION && data?.orders[0]?.fulfillerComment == FulfillerStatus.DECLINED
+      ? 'Échec d\'envoi'
+      : data?.orders[0]?.fulfillerStatus === FulfillerStatus.EXCEPTION && data?.orders[0]?.fulfillerComment !== FulfillerStatus.CANCELLED
+      ? 'Rejeté'
       : data?.orders[0]?.fulfillerStatus === FulfillerStatus.EXCEPTION && data?.orders[0]?.fulfillerComment === FulfillerStatus.CANCELLED
-      ? 'Annuler'
-      : data?.orders[0]?.fulfillerStatus === FulfillerStatus.RECEIVED
+      ? 'Annulé'
+      : data?.orders[0]?.fulfillerStatus === FulfillerStatus.IN_PROGRESS && data?.orders[0]?.fulfillerComment === FulfillerStatus.INPROGRESS
       ? 'En cours'
+      : data?.orders[0]?.fulfillerStatus === FulfillerStatus.RECEIVED && data?.orders[0]?.fulfillerComment === FulfillerStatus.ACCEPTED
+      ? 'Reçu au labo'
+      : data?.orders[0]?.fulfillerStatus === FulfillerStatus.RECEIVED && data?.orders[0]?.fulfillerComment === FulfillerStatus.REQUESTED
+      ? 'Envoyé'
       : data?.orders[0]?.fulfillerStatus === FulfillerStatus.COMPLETED
       ? 'Réalisé'
-      : 'Non soumis'
+      : 'Envoi en cours'
     ),
 
-    // cell: ({ getValue }) => (
-    //   <Text size={'sm'}>{ getValue<Obs>().value?"Completed":"In Progress" }</Text>
-    // ),
-  },
-  {
-    id: 'regime',
-    header: 'Regime',
-    accessorFn: (data) => data.obs.find((o) => o.concept.uuid === Concepts.ARV_REGIMEN)?.display,
-    // cell: ({ getValue }) => (
-    //   <Text size={'sm'}>{ getValue<Obs>().value?"Completed":"In Progress" }</Text>
-    // ),
+    cell: ({ getValue }) => {
+      const status = getValue<string>();
+      const colorMap: Record<string, string> = {
+        'Échec d\'envoi':    'red',
+        'Envoi en cours':'yellow',
+        'Envoyé':        'blue',
+        'Reçu au labo':  'cyan',
+        'En cours':      'orange',
+        'Réalisé':       'green',
+        'Rejeté':        'red',
+        'Annulé':        'dark',
+      };
+      return (
+        <Badge color={colorMap[status] ?? 'gray'} variant="filled" size="sm">
+          {status}
+        </Badge>
+      );
+    },
   },
   {
     id: 'provider',
     header: 'Prescripteur',
-    accessorFn: (data) => data.encounterProviders.find((e) => e.encounterRole.uuid === EncounterRole.CLINICIAN)?.provider,
+    accessorFn: (data) => data?.encounterProviders.find((e) => e.encounterRole.uuid === EncounterRole.CLINICIAN)?.provider,
     cell: ({ getValue }) => (
-      <Text size={'sm'}>{getValue<string>() && getValue<Provider>().person.names[0].familyName} {getValue<string>() && getValue<Provider>().person.names[0].givenName}</Text>
+      <Text size={'sm'}>{getValue<string>() && getValue<Provider>()?.person?.names[0]?.familyName} {getValue<string>() && getValue<Provider>()?.person?.names[0]?.givenName}</Text>
     ),
   },
   {
     id: 'menu',
     header: 'Action',
+    size: 60,
     cell: (data) => (
-      <Group spacing={0} position="right">
+      <Group spacing={0} position="center">
         <Link
           style={{ textDecoration: 'none' }}
           to={`/patient-order/${data.row.getValue(
             'patient'
           )}/result/${data.row.getValue('uuid')}`}
         >
-          <Button color={'green.7'}>
-            <IconEye />
+          <Button size="xs" compact px={6}>
+            <IconEye size={14} />
           </Button>
         </Link>
       </Group>
@@ -115,19 +129,13 @@ const cols: ColumnDef<Encounter>[] = [
   },
 ];
 
+
 export function OrderListTable({ orders }: OrderListTableProps) {
-  const data: Encounter[] = useMemo(() => orders, [orders]);
+  const data: Encounter[] = useMemo(() =>
+    [...orders].sort((a, b) => new Date(b?.dateCreated).getTime() - new Date(a?.dateCreated).getTime()),
+    [orders]
+  );
   const columns: ColumnDef<Encounter>[] = useMemo(() => [...cols], []);
-
-  async function getEncountersSortedByDateDesc(encounters:Encounter[]): Promise<any[]> {
-    return encounters.sort((a, b) => {
-        const dateA = new Date(a.encounterDatetime).getTime();
-        const dateB = new Date(b.encounterDatetime).getTime();
-        return dateB - dateA;
-    });
-}
-
- getEncountersSortedByDateDesc(data); 
   // const tableHooks = (hooks: any) => {
   //   hooks.visibleColumns.push((columns: any) => [
   //     ...columns,
@@ -155,7 +163,7 @@ export function OrderListTable({ orders }: OrderListTableProps) {
   //   ]);
   // };
   return (
-    <div>
+    <div id='overflowIdFDUli' style={{ fontSize: '12px' }}>
       <CustomTable
         pagination
         initialState={{
@@ -163,7 +171,7 @@ export function OrderListTable({ orders }: OrderListTableProps) {
         }}
         data={data}
         columns={columns}
-        color={'cyan'}
+        color={'gray'}
         searchable
       />
     </div>

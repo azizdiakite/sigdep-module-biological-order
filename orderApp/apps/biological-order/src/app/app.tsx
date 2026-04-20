@@ -1,11 +1,13 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-import { Route, Routes, Link } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import { BiologicalOrderOrderListFeature } from '@spbogui-openmrs/biological-order/order-list/feature';
 
 import { BiologicalOrderPatientOrderFeature } from '@spbogui-openmrs/biological-order/patient-order//feature';
-import { Paper, Text, useMantineTheme, Badge } from '@mantine/core';
+import { Text, useMantineTheme, Badge} from '@mantine/core';
+import { Paper } from '@mantine/core';
+
 
 export function App() {
   const theme = useMantineTheme();
@@ -37,7 +39,7 @@ export function App() {
         />
         <Route path="/" element={<BiologicalOrderOrderListFeature />} />
       </Routes>
-      <Badge color="blue"> v1.0.1</Badge>
+      <Badge color="blue" size="sm" >  v.1.5.5</Badge>
       {/* END: routes */}
     </>
   );

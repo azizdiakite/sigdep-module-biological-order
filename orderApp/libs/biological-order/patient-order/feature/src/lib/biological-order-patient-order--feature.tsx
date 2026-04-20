@@ -8,7 +8,11 @@ import {
   Alert,
   Title,
   Flex,
-  Tooltip
+  Tooltip,
+  LoadingOverlay,
+  Loader,
+  Stack,
+  Center,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useInputState } from '@mantine/hooks';
@@ -28,17 +32,15 @@ import {
   customEncounterParams,
   EncounterType,
   FulfillerStatus,
-  IdentifierType,
 } from '@spbogui-openmrs/shared/utils';
-import { IconArrowRight, IconCalendar, IconList, IconPlus, IconPrinter } from '@tabler/icons';
+import { IconArrowLeft, IconArrowRight, IconCalendar, IconList, IconPlus } from '@tabler/icons';
 import invariant from 'invariant';
 import { Link, Route, Routes, useParams } from 'react-router-dom';
 import PatientOrderListTable from './patient-order-list-table/patient-order-list-table';
 import dayjs from 'dayjs';
 import { useFindLatestObs } from 'libs/biological-order/patient-order/ui/order-form/src/lib/use-find-latest-obs/use-find-latest-obs';
-import { useEffect, useState } from 'react';
-import { Encounter, Obs, PatientIdentifier } from '@spbogui-openmrs/shared/model';
-import ReactToPrint from 'react-to-print';
+import { useState } from 'react';
+import { Encounter, PatientIdentifier } from '@spbogui-openmrs/shared/model';
 
 /* eslint-disable-next-line */
 export interface BiologicalOrderPatientOrderFeatureProps {}
@@ -63,38 +65,42 @@ export function BiologicalOrderPatientOrderFeature(
     return hyphenCount === 2;
 }
 
-  const { patient } = useFindOnePatient(patientId, 'full', true);
+  const { patient, isLoading: isLoadingPatient } = useFindOnePatient(patientId, 'full', true);
+
   let  patientIdList = [];
   patientIdList = patient && patient.identifiers.length > 0 ? patient?.identifiers : [];
   getUpid(patientIdList)
-  const { transfered, selfStopTreatment, negatifVih} = useFindLatestObs(patient ? patient.uuid : '',dayjs(requestDate).format('YYYY-MM-DD'),'');
+  const { transfered, selfStopTreatment, negatifVih, encounterLength, deadDate} = useFindLatestObs(patient ? patient.uuid : '',dayjs(requestDate).format('YYYY-MM-DD'),'');
   //const {encounters } = useFindAllEncounters(EncounterType.REQUEST_EXAM ,"2010-01-01" ,"9999-12-12" ,customEncounterParams ,'100' ,true)
-  let { encounter } = useFindFilteredEncounter(patientId ,EncounterType.REQUEST_EXAM ,customEncounterParams ,'' ,'' ,true);
-  let { encounterClosed } = useFindLastClosedEncounter(patientId ,customEncounterParams ,'' ,'' ,true);
-  let { lastEnrollmentEncounter } = useFindLastEnrollmentEncounter(patientId ,customEncounterParams ,'' ,'' ,true);
+  let { encounter, isLoading: isLoadingEncounter } = useFindFilteredEncounter(patientId ,EncounterType.REQUEST_EXAM ,customEncounterParams ,'' ,'' ,true);
+  let { encounterClosed, isLoading: isLoadingClosed } = useFindLastClosedEncounter(patientId ,customEncounterParams ,'' ,'' ,true);
+  let { lastEnrollmentEncounter, isLoading: isLoadingEnrollment } = useFindLastEnrollmentEncounter(patientId ,customEncounterParams ,'' ,'' ,true);
 
+  const isLoading = isLoadingPatient || isLoadingEncounter || isLoadingClosed || isLoadingEnrollment;  
  
     const closedEncounter  = encounterClosed[0] ;
     const isRealTransfered = closedEncounter?.obs?.find((o) => o?.concept?.uuid === Concepts.TRANSFERERD);
     const isSelfStopTreatment = closedEncounter?.obs?.find((o) => o?.concept?.uuid === Concepts.SELF_STOP_TREATMENT_CHECKED);
     const isFakePositive = closedEncounter?.obs?.find((o) => o?.concept?.uuid === Concepts.FAKE_POSITIVE);
-    const isDead = closedEncounter?.obs?.find((o) => o?.concept?.uuid === Concepts.PATIENT_DEATH);
-    
+    //const isDead = closedEncounter?.obs?.find((o) => o?.concept?.uuid === Concepts.PATIENT_DEATH);
+    const isDead = deadDate !== undefined;
+    const isStopped = selfStopTreatment !== undefined;
+    const isNegatif = negatifVih !== undefined
 
-  
   //console.log({lastEnrollmentEncounter: lastEnrollmentEncounter[0]?.encounterDatetime});
  // console.log({encounterClosed: encounterClosed[0].encounterDatetime});
   //console.log({isTransfered: isTransfered(lastEnrollmentEncounter, encounterClosed)});
 
 
   const lastResult = encounter[0]?.obs.find((o) => o.concept.uuid === Concepts.GROSS_HIV_VIRAL_LOAD);
-  const lastResultIsAvailable = (lastResult !== undefined && encounter?.length > 0) || (lastResult === undefined && encounter?.length === 0) || (encounter[0]?.orders[0]?.fulfillerStatus == FulfillerStatus.EXCEPTION) || (encounter[0]?.orders[0]?.fulfillerStatus == null);
+  const lastResultIsAvailable = (lastResult !== undefined && encounter?.length > 0) || (lastResult === undefined && encounter?.length === 0) || (encounter[0]?.orders[0]?.fulfillerStatus == FulfillerStatus.EXCEPTION);
+
   //const lastResultIsAvailable = true;
   const patientIsTranfered = transfered && isTransfered(lastEnrollmentEncounter, encounterClosed)
-  let displayCalendar =  (lastResultIsAvailable && !patient?.person?.dead && !patientIsTranfered) && !sended && (selfStopTreatment === undefined) && (negatifVih === undefined)
+  let displayCalendar = encounterLength || ((lastResultIsAvailable && !isDead && !patientIsTranfered) && !sended && (selfStopTreatment === undefined) && (negatifVih === undefined))
   let warning_message = '';
 
-  if(patient && patient?.person?.dead){
+  if(patient && isDead){
     warning_message = "La demande ne peut etre effectuée car le patient est décédé.";
   }
 
@@ -103,8 +109,8 @@ export function BiologicalOrderPatientOrderFeature(
   if(patientIsTranfered){
     warning_message = "Ce patient a été transféré à : "+ transfered.value;
   }
-  if(selfStopTreatment){
-    warning_message = "Ce patient a volontairement arreté son traitement le : "+ dayjs(selfStopTreatment).format('DD/MM/YYYY')  ;
+  if(selfStopTreatment && !encounterLength){
+    warning_message = "Ce patient a volontairement arreté son traitement le : "+ dayjs(selfStopTreatment).format('DD/MM/YYYY');
   }
   if(negatifVih){
     warning_message = "Ce patient a été declaré négatif le : "+ dayjs(negatifVih).format('DD/MM/YYYY')  ;
@@ -144,11 +150,7 @@ export function BiologicalOrderPatientOrderFeature(
     return new Date(firstDateStr) < new Date(secondDateStr);
 }
 
-  const updatEncounter = () => {
-    let { encounter } = useFindFilteredEncounter(patientId ,EncounterType.REQUEST_EXAM ,customEncounterParams ,'' ,'' ,true);
-    console.log({encounter: encounter});
-    setEncounters(encounter)
-  };
+
 
   const locuuid = localStorage.getItem('location_uuid') ? localStorage.getItem('location_uuid'): '';
   const uuid = locuuid === null ? '' : locuuid
@@ -159,10 +161,6 @@ export function BiologicalOrderPatientOrderFeature(
     localStorage.setItem('district_uuid', location.parentLocation?.uuid) ;
     localStorage.setItem('code', location.postalCode);
   }
-
-  useEffect(() => {
-    
-  }, [encounter]);
 
   // const { encounter: latestCd4 } = useFindFilteredEncounter(
   //   patientId,
@@ -191,24 +189,31 @@ export function BiologicalOrderPatientOrderFeature(
   //   true
   // );
  
-  return (  
+  return (
     <Paper
       withBorder
       m={'xs'}
       sx={(theme) => ({ backgroundColor: theme.colors.gray[0] })}
+      pos={'relative'}
     >
+      <LoadingOverlay
+        visible={isLoading}
+        overlayBlur={3}
+        overlayOpacity={0.6}
+        overlayColor="#f8f9fa"
+        loader={
+          <Center>
+            <Stack align="center" spacing="xs">
+              <Loader size="xl" variant="dots" color="cyan" />
+              <Text size="sm" color="cyan" weight={500}>Chargement en cours...</Text>
+            </Stack>
+          </Center>
+        }
+      />
       <Group p="xs" position="apart">
-        <Text
-          size={'lg'}
-          weight={'bold'}
-          color={'cyan.7'}
-          transform={'uppercase'}
-        >
-          Demande d'examen du patient
-        </Text>
         <Link to={'/'}>
-          <Button leftIcon={<IconList />} color={'gray'}>
-            Retourner à la liste
+          <Button leftIcon={<IconArrowLeft />} >
+            Retour
           </Button>
         </Link>
       </Group>
@@ -219,7 +224,7 @@ export function BiologicalOrderPatientOrderFeature(
           <Text size={'lg'}  weight={'bold'}>
             {patient && patient.person.display}
           </Text>
-          <Text> Numéro du patient : </Text>
+          <Text> Code patient : </Text>
           <Text size={'md'} color={'cyan'} weight={'bold'}>
             {patient && patient.identifiers[0].identifier}
           </Text>
@@ -326,7 +331,7 @@ export function BiologicalOrderPatientOrderFeature(
               />
               <Route
                 path="result/:requestId"
-                element={<BiologicalOrderPatientOrderUiOrderResult />}
+                element={<BiologicalOrderPatientOrderUiOrderResult  patient={patient}/>}
               />
                <Route
                 path="display/:requestId"

@@ -2,7 +2,7 @@ import { Alert, Center, Divider, Paper, Table, Text } from '@mantine/core';
 import { Encounter, Order, Patient } from '@spbogui-openmrs/shared/model';
 import { IconHome } from '@tabler/icons';
 import dayjs from 'dayjs';
-import { Concepts } from '@spbogui-openmrs/shared/utils';
+import { Concepts, FulfillerStatus } from '@spbogui-openmrs/shared/utils';
 
 /* eslint-disable-next-line */
 export interface BiologicalOrderPatientOrderUiPatientHomeProps {
@@ -19,7 +19,7 @@ export function BiologicalOrderPatientOrderUiPatientHome({
   latestOrder,
 }: BiologicalOrderPatientOrderUiPatientHomeProps) {
   return (
-    <Paper withBorder>
+    <Paper withBorder id='overflowId2'>
       <Text
         // size={'md'}
         color={'cyan.7'}
@@ -30,7 +30,7 @@ export function BiologicalOrderPatientOrderUiPatientHome({
         <IconHome />
       </Text>
       <Divider mb={'xs'} />
-      <Paper p={'xs'} m={'xs'} withBorder>
+      <Paper p={'xs'} m={'xs'} withBorder id='overflowId3'>
         <Text color={'cyan.7'}>Dernière demande de charge virale</Text>
         <Divider color={'cyan.7'} />
 
@@ -46,7 +46,23 @@ export function BiologicalOrderPatientOrderUiPatientHome({
             <tbody>
               <tr>
                 <td>{dayjs(latestOrder.orders[0].dateActivated).format('DD/MM/YYYY')}</td>
-                <td>{latestOrder.obs.find((o) => o.concept.uuid === Concepts.GROSS_HIV_VIRAL_LOAD)?.value?"Réalisé" :"En cours"}</td>
+                <td>{ 
+                    latestOrder?.orders[0]?.fulfillerStatus === FulfillerStatus.EXCEPTION && latestOrder?.orders[0]?.fulfillerComment == FulfillerStatus.DECLINED
+                     ? 'Non soumis'
+                     :latestOrder?.orders[0]?.fulfillerStatus === FulfillerStatus.EXCEPTION && latestOrder?.orders[0]?.fulfillerComment !== FulfillerStatus.CANCELLED
+                     ? 'Rejeté'
+                     : latestOrder?.orders[0]?.fulfillerStatus === FulfillerStatus.EXCEPTION && latestOrder?.orders[0]?.fulfillerComment === FulfillerStatus.CANCELLED
+                     ? 'Annulé'
+                     : latestOrder?.orders[0]?.fulfillerStatus === FulfillerStatus.IN_PROGRESS && latestOrder?.orders[0]?.fulfillerComment === FulfillerStatus.INPROGRESS
+                     ? 'En cours'
+                     : latestOrder?.orders[0]?.fulfillerStatus === FulfillerStatus.RECEIVED &&  latestOrder?.orders[0]?.fulfillerComment === FulfillerStatus.ACCEPTED
+                     ? 'Reçu au labo'
+                     : latestOrder?.orders[0]?.fulfillerStatus === FulfillerStatus.RECEIVED &&  latestOrder?.orders[0]?.fulfillerComment === FulfillerStatus.REQUESTED
+                     ? 'Envoyé'
+                     : latestOrder?.orders[0]?.fulfillerStatus === FulfillerStatus.COMPLETED
+                     ? 'Réalisé'
+                     : 'Envoi en cours'}
+                     </td>
                 <td>{latestOrder.orders[0].orderNumber}</td>
               </tr>
             </tbody>

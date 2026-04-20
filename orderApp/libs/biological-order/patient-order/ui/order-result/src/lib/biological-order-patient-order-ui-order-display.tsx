@@ -260,7 +260,7 @@ export function BiologicalOrderPatientOrderUiOrderDisplay(
                     <Group mb={'xs'}>
                       <Text size={'sm'}>Nom du clinicien  <span style={{ color: theme.colors.red[8] }}>*</span></Text>
                       <Text weight={'bold'}>
-                        {encounter?.encounterProviders[0].provider.person.names[0].givenName}
+                        {encounter?.encounterProviders[0]?.provider?.person?.names[0]?.givenName}
                       </Text>
                     </Group>
                     <Group mb={'xs'}>
@@ -283,7 +283,7 @@ export function BiologicalOrderPatientOrderUiOrderDisplay(
                     <Group mb={'xs'}>
                       <Text size={'sm'}>Nom du préleveur  <span style={{ color: theme.colors.red[8] }}>*</span></Text>
                       <Text weight={'bold'}>
-                       {encounter?.encounterProviders[1].provider.person.names[0].givenName}
+                       {encounter?.encounterProviders[1]?.provider?.person?.names[0]?.givenName}
                       </Text>
                     </Group>
                     <Group mb={'xs'}>

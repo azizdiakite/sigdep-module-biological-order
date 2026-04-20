@@ -15,6 +15,7 @@ import {
   EncounterService,
   ObsService,
   OrderService,
+  ReportingService,
 } from '@spbogui-openmrs/shared/service';
 import { useFindLocation, useLocation } from '../use-location/use-location';
 
@@ -291,6 +292,24 @@ export const useSaveOrder = () => {
   };
 };
 
+export function useFindFilteredOrder(
+
+) {
+  const {
+    data,
+    refetch: findAllOrders,
+    isLoading,
+  } = useQuery(
+    ['orders'],
+    async () => await OrderService.findAllOrders(),
+  );
+  const result = data ? data : null;
+  return {
+    result,
+    isLoading,
+  };
+};
+
 export const useFindObs = (
   patient: string,
   concept: string,
@@ -315,6 +334,25 @@ export const useFindObs = (
   return { obs, findObs, isLoading };
 };
 
+
+export const useFindNonCachedObs = (
+  patient: string,
+  concept: string,
+  otherParams = '',
+  view = 'default'
+) => {
+  const {
+    data,
+    refetch: findObs,
+    isLoading,
+  } = useQuery(
+    [concept, patient, view, otherParams],
+    async () => await ObsService.filterWithoutCache(patient, concept, view),
+    { enabled: true }
+  );
+  const obs = data ? data : [];  
+  return { obs, findObs, isLoading };
+};
 
 export const useFindObsByEncounter = (
   patient: string,
@@ -355,4 +393,25 @@ export const useFindObsByForm = (
   const obs = data ? data : [];
 
   return { obs, findObsByForm, isLoading };
+};
+
+export const useGetJasper = () => {
+  const { mutate: getJasperReport, isLoading } = useMutation((params: any) =>
+    ReportingService.getJasperReport(params)
+  );
+  return {
+    getJasperReport,
+    isLoading,
+  };
+};
+
+export function useReviseOrder() {
+  const {
+    mutate: updateOrder,
+    isLoading,
+  } = useMutation((orderId: number) => OrderService.updateOder(orderId));
+  return {
+    updateOrder,
+    isLoading,
+  };
 };

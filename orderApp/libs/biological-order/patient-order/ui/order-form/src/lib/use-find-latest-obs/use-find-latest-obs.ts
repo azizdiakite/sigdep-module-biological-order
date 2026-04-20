@@ -110,7 +110,6 @@ export const useFindLatestObs = (
     const negatifVih = negatifVihObs.length === 1 ? negatifVihObs[0].value: undefined; 
    // console.log({negatifVih : negatifVih});
 
-
     const { obs: antiretroviralPlanObs, isLoading: loadingAntiretroviralPlanObs} = useFindObs(patient, Concepts.ANTIRETROVIRAL_PLAN, ``, view);
     const antiretroviralPlan = antiretroviralPlanObs.length === 1 ? antiretroviralPlanObs[0].value: undefined; 
    // console.log({antiretroviralPlan : antiretroviralPlan});
@@ -126,17 +125,19 @@ export const useFindLatestObs = (
   const accessionNumber = accessionNumberObs.length === 1 ? accessionNumberObs[0].value: undefined; 
   const accessionNumberDateCreated = accessionNumberObs.length === 1 ? accessionNumberObs[0].dateCreated: undefined; 
   //console.log({accessionNumber: accessionNumberDateCreated});
+
+   const { obs: daedObs, isLoading: loadingDaedObs} = useFindObs(patient, Concepts.DEAD_DATE, ``, view);
+  const deadDate = daedObs.length === 1 ? daedObs[0].value: undefined; 
+  //const accessionNumberDateCreated = daedObs.length === 1 ? daedObs[0].dateCreated: undefined; 
+  //console.log({deadDate: deadDate});
     
 
   /****   INFOS FICHE INITIAL */
   let { lastEnrollmentEncounter } = useFindLastEnrollmentEncounter(patient ,customEncounterParams ,'' ,'' ,true);
   let { encounterBilan } = useFindLastBilanEncounter(patient ,customEncounterParams ,'' ,'' ,true);
   let { lastClotureEncounter } = useFindLastClotureEncounter(patient ,customEncounterParams ,'' ,'' ,true);
-
-
-  const lastestEnrollemntEcounter = lastEnrollmentEncounter?.length > 1 ? lastEnrollmentEncounter[0] : lastEnrollmentEncounter[lastEnrollmentEncounter?.length -1];
-
-
+  const encounterLength = lastEnrollmentEncounter?.length > 1 ;
+  const lastestEnrollemntEcounter = encounterLength ? lastEnrollmentEncounter[0] : lastEnrollmentEncounter[lastEnrollmentEncounter?.length -1];
 
 
   //console.log({lastestEnrollemntEcounter: lastestEnrollemntEcounter});
@@ -192,10 +193,10 @@ export const useFindLatestObs = (
     loadingLastViralDateLoadObs &&
     loadingHivViralLoadTestObs &&
     loadingAccessionNumberObs && 
-   // loadingLatestCd4AbsoluteFormObs && 
     loadingSelfStopTreatmentObs && 
     loadingSNegatifVihObs && 
-    loadingGrossHivViralLoadTestObs
+    loadingGrossHivViralLoadTestObs &&
+    loadingDaedObs
 
   return {
     pregnancyStatus,
@@ -234,6 +235,8 @@ export const useFindLatestObs = (
     initialCd4PercentageObs,
     biologicalEncounter,
     lastClotureEncounter,
-    lastestHivViralLoad
+    lastestHivViralLoad,
+    encounterLength,
+    deadDate
     };
 };

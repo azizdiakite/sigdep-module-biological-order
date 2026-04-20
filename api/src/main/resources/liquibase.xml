@@ -249,4 +249,54 @@
         </insert>
     </changeSet>
 
+    <!-- Changeset qui s'exécute à chaque démarrage pour supprimer les doublons
+     <changeSet id="remove-duplicate-date-${timestamp}" author="azmac" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END 
+                FROM task_request 
+                GROUP BY request_date 
+                HAVING COUNT(*) > 1
+            </sqlCheck>
+        </preConditions>
+        
+        <sql>
+            DELETE t1 FROM task_request t1
+            INNER JOIN task_request t2 
+            WHERE t1.id > t2.id 
+            AND t1.request_date = t2.request_date;
+        </sql>
+        
+    </changeSet> -->
+
+    <!-- Changeset unique pour ajouter la contrainte d'unicité (s'exécute une seule fois) 
+    <changeSet id="add-unique-task-request" author="azmac">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="task_request" indexName="uk_task_request_date"/>
+            </not>
+        </preConditions>
+        
+         Nettoyer d'abord les doublons existants
+        <sql>
+            DELETE t1 FROM task_request t1
+            INNER JOIN task_request t2 
+            WHERE t1.id > t2.id 
+            AND t1.request_date = t2.request_date;
+        </sql>
+        
+        Ajouter la contrainte d'unicité
+        <addUniqueConstraint 
+            tableName="task_request"
+            columnNames="request_date"
+            constraintName="uk_task_request_date"/>
+        
+        <rollback>
+            <dropUniqueConstraint 
+                tableName="task_request" 
+                constraintName="uk_task_request_date"/>
+        </rollback>
+    </changeSet>-->
+
+
 </databaseChangeLog>

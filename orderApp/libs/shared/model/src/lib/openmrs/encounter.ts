@@ -57,14 +57,12 @@ export interface EncounterForm {
   encounterProviders: EncounterProviderForm[];
   uuid?: string;
   form?: string;
-  creator: string;
 }
 
 export const ENCOUNTER_INITIAL_VALUES: EncounterForm = {
   patient: '',
   encounterProviders: [{ encounterRole: '', provider: '' }],
   location: '',
-  creator:'',
   obs: [],
   encounterDatetime: undefined,
   encounterType: '',
@@ -72,7 +70,9 @@ export const ENCOUNTER_INITIAL_VALUES: EncounterForm = {
 };
 
 export const encounterProviderSchema = Joi.object<EncounterProviderForm>({
-  provider: Joi.optional(),
+  provider: Joi.string()
+  .required()
+  .messages({ 'string.empty': 'Ce champ est requis' }),
   encounterRole: Joi.string()
     .required()
     .messages({ 'string.empty': 'Ce champ est requis' }),

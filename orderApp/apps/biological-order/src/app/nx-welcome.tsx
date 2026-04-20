@@ -89,6 +89,9 @@ export function NxWelcome({ title }: { title: string }) {
       color: rgba(55, 65, 81, 1);
       width: 100%;
     }
+    .navList li{
+      font-size : 1.3em;
+    }
     #welcome {
       margin-top: 2.5rem;
     }

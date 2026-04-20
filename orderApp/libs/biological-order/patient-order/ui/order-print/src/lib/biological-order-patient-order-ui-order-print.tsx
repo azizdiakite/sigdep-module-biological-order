@@ -42,10 +42,6 @@ const upid  = localStorage.getItem('upid') ? localStorage.getItem('upid'): '…�
   const CROSS = 'x';
   const NO_CD4_DATE = '|__|__|/|__|__|/|__|__|__|__|'
   const {
-    hasViralLoad, 
-    lastViralLaboratoryLoad, 
-    lastViralDateLoad, 
-    lastViralLoad,
     hivTypeForm,
     antiretroviralPlan,
     initialCd4DateForm,
@@ -53,10 +49,6 @@ const upid  = localStorage.getItem('upid') ? localStorage.getItem('upid'): '…�
     treatmentStartDate,
     treatmentLine,
     arvRegimen,
-    initialCd4AbsoluteForm,
-    initialCd4PercentageForm,
-    initialCd4Percentage,
-    initialCd4Absolute,
     grossHivViralLoadTest,
     accessionNumber,
     accessionNumberDateCreated,
@@ -64,12 +56,14 @@ const upid  = localStorage.getItem('upid') ? localStorage.getItem('upid'): '…�
     initialCD4CountValue,
     initialCD4PercentValue,
     initialCD4DateValue,
-    lastestHivViralLoad
+    lastestHivViralLoad,
+    currentlyBreastfeedingChild,
+    pregnancyStatus
     
   } = useFindLatestObs(patient ? patient.uuid : '',dayjs(requestDate).format('YYYY-MM-DD'),'');
     
-  const pregnancyStatus = encounter?.obs.find((o) => o.concept.uuid === Concepts.PREGNANCY_STATUS);
-  const currentlyBreastfeeding = encounter?.obs.find((o) => o.concept.uuid === Concepts.CURRENTLY_BREAST_FEEDING);
+  //const pregnancyStatus = encounter?.obs.find((o) => o.concept.uuid === Concepts.PREGNANCY_STATUS);
+  //const currentlyBreastfeeding = encounter?.obs.find((o) => o.concept.uuid === Concepts.CURRENTLY_BREAST_FEEDING);
   let arvStartDate: Date;
 
   const prefix = accessionNumber ? accessionNumber.replace(/[^a-zA-Z]/g, '') : '';
@@ -147,8 +141,8 @@ const upid  = localStorage.getItem('upid') ? localStorage.getItem('upid'): '…�
         lab : laboratory ? laboratory: '………',
         value : viralLoadValue !== undefined ? viralLoadValue : '……',
         lastDate : lastHivDate !== undefined ? dayjs(lastHivDate).format('DD/MM/YYYY') :'………',
-        preg : (pregnancyStatus?.value?.uuid === Concepts.YES) ? CROSS: DOUBLE_UNDERSCORE,
-        feed:  (currentlyBreastfeeding?.value?.uuid === Concepts.YES) ? CROSS: DOUBLE_UNDERSCORE,
+        preg : (pregnancyStatus?.uuid === Concepts.YES) ? CROSS: DOUBLE_UNDERSCORE,
+        feed:  (currentlyBreastfeedingChild?.uuid === Concepts.YES) ? CROSS: DOUBLE_UNDERSCORE,
         printDate : formattedDate,
         icd4c : initialCD4CountValue?.value !== undefined ? initialCD4CountValue?.value : '………',
         icd4p : initialCD4PercentValue?.value !== undefined ? initialCD4PercentValue?.value : '………',
@@ -222,7 +216,7 @@ const upid  = localStorage.getItem('upid') ? localStorage.getItem('upid'): '…�
   }
 
   return (
-    <Paper >
+    <Paper  id='overflowId5'>
       {/* <h1>Welcome to BiologicalOrderPatientOrderUiOrderPrint!</h1> */}
      {/* <Text size={'md'} color={'cyan.7'} weight={'bold'} m={'xs'}>
       {JSON.stringify(currentlyBreastfeeding)}

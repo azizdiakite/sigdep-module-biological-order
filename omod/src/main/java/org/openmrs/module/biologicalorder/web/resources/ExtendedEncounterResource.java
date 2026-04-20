@@ -25,7 +25,7 @@ import org.openmrs.module.biologicalorder.api.BiologicalOrderService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 
-@Resource(name = RestConstants.VERSION_1 + "/encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = { "2.*" }, order = 4)
+@Resource(name = RestConstants.VERSION_1 + "/encounter-list", supportedClass = Encounter.class, supportedOpenmrsVersions = { "2.*" }, order = 4)
 public class ExtendedEncounterResource extends EncounterResource2_2 {
 	
 	@Override

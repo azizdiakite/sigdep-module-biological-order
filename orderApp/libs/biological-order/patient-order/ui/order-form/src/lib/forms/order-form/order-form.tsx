@@ -14,8 +14,8 @@ import {
   Alert,
   Card,
   Title,
-  BackgroundImage,
 } from '@mantine/core';
+import { useState } from 'react';
 import { DatePicker } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
 import { Patient } from '@spbogui-openmrs/shared/model';
@@ -51,6 +51,9 @@ export interface OrderFormProps {
   providers: SelectItem[];
   regimenList: SelectItem[];
   isTransfered?: boolean,
+  isDead?: boolean,
+  isNegatif?: boolean,
+  isStopped?: boolean
   handleSubmit: (values: OrderFormType) => void;
   handleUpdateParent: () => void;
 }
@@ -62,11 +65,16 @@ export function OrderForm({
   providers,
   regimenList,
   isTransfered,
+  isDead,
+  isNegatif,
+  isStopped
 }: OrderFormProps) {
   const { classes } = styles();
   const theme = useMantineTheme();
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const currentDate = new Date(); 
   const futureDate =  new Date(dayjs(form.values.requestDate).format('YYYY-MM-DD'));
+  const upidIdentifier = localStorage.getItem('upid') ? localStorage.getItem('upid'): '';
   function compareDates(date1: Date, date2: Date): number {
     const date1SansHeure = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
     const date2SansHeure = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
@@ -105,6 +113,7 @@ export function OrderForm({
     labels: { confirm: 'Confirmer', cancel: 'Annuler' },
     onCancel: () => console.log('Cancel'),
     onConfirm() {
+       setIsSubmitted(true);
        handleSubmit(form.values);
        handleUpdateParent();
        const timer = setTimeout(() => {
@@ -119,11 +128,20 @@ export function OrderForm({
       <form>
       {patient && (
         <>
-          { patient.person.dead ? (
+          { isDead ? (
             <Alert color="red" title="ATTENTION !!!!">
             La demande ne peut etre effectuée car le patient est décédé .
           </Alert>): ''}
-      
+
+           { isStopped ? (
+            <Alert color="red" title="ATTENTION !!!!">
+            La demande ne peut etre effectuée car le patient est en arret .
+          </Alert>): ''}
+
+          { isNegatif ? (
+            <Alert color="red" title="ATTENTION !!!!">
+            La demande ne peut etre effectuée car le patient est négatif .
+          </Alert>): ''}      
           { isTransfered  ? (
             <Alert color="red" ml={'xl'}>
             {"Patient transféré à : "+ transfered?.value}
@@ -134,9 +152,6 @@ export function OrderForm({
         border: patient.person.dead || isTransfered  ? '2px solid #ffe3e3': 'none', // Exemple de bordure de 2px solide rouge
         backgroundColor: theme.colors.gray[1],
       }}>
-        <Card.Section mb={20}>
-          <Title color={'cyan'} align="center"> FORMULAIRE DE DEMANDE DE CHARGE VIRALE</Title>
-        </Card.Section>
       
 <fieldset>
       <legend> 
@@ -145,6 +160,18 @@ export function OrderForm({
 
           { /*JSON.stringify(form.values.latestViralLoadLaboratory) */}
 
+        <Group mb={'xs'}>
+            <Text size={'md'}>Code ARV : </Text>
+            <Text weight={'bold'}>
+                  {patient && patient.identifiers[0].identifier}
+            </Text>
+          </Group>
+          <Group mb={'xs'}>
+            <Text size={'md'}>Upid : </Text>
+            <Text weight={'bold'}>
+                 { upidIdentifier }
+            </Text>
+          </Group>
           <Group mb={'xs'}>
             <Text size={'md'}>Date de naissance : </Text>
             <Text weight={'bold'}>
@@ -217,8 +244,7 @@ export function OrderForm({
                   concept={Concepts.CURRENTLY_BREAST_FEEDING}
                   form={form}
                   type={'radio'}
-                  name={'currentlyBreastfeedingChild'}
-                  readOnly
+                  name={'currentlyBreastfeedingChild'}               
                 >
                   <Group>
                     <Text size={'md'} pb={'xs'}>
@@ -256,6 +282,7 @@ export function OrderForm({
               concept={Concepts.HIV_TYPE}
               form={form}
               name={'hivType'}
+              readOnly
             >
               <Group>
                 <Text size={'md'} pb={'xs'}>
@@ -282,6 +309,7 @@ export function OrderForm({
               name="isOnTreatment"
               form={form}
               type={'radio'}
+              readOnly
             >
               <Group>
                 <Text size={'md'} pb={'xs'}>
@@ -317,6 +345,7 @@ export function OrderForm({
               concept={Concepts.ANTI_RETRO_TREATMENT_LINE}
               form={form}
               type={'radio'}
+              readOnly
             >
               <Group>
                 <Text size={'md'} pb={'xs'}>
@@ -372,7 +401,7 @@ export function OrderForm({
              // variant={'unstyled'}
             />
           </Group>
-          <Paper  p={'xs'} bg={theme.colors.gray[1]}>
+          <Paper  p={'xs'} bg={theme.colors.gray[1]} id='overflowId7'>
           <Group mb={'md'}>
             <Text  size={'md'} weight="bold" underline>
               Motif de la demande de la CV
@@ -561,11 +590,11 @@ export function OrderForm({
             concept={Concepts.LAST_VIRAL_LOAD_LABORATORY}
             //variant="unstyled"
             // readOnly={form.values.latestViralLoadLaboratory ? true: false}
-         readOnly
+            readOnly
             placeholder={'......................................................'}
               />
 
-<Text size={'md'}>Date </Text>
+          <Text size={'md'}>Date </Text>
             <ObsInput
               form={form}
               name={'latestViralLoadDate'}
@@ -592,7 +621,7 @@ export function OrderForm({
           </Text>
         </legend>  
           
-          <Paper  bg={theme.colors.gray[1]}>
+          <Paper  bg={theme.colors.gray[1]} id='overflowId6'>
             <Table className={classes.table}>
               <tbody>
                 <tr>
@@ -723,7 +752,7 @@ export function OrderForm({
         </Container>
         { patient.person.dead ? ' ': (
           <Group position="center" p={'xs'}>
-             <Button onClick={openModal}  disabled={!form.isValid()}>Enregistrer</Button>
+             <Button onClick={openModal} disabled={!form.isValid() || isSubmitted}>Enregistrer</Button>
            </Group>
           )
           }

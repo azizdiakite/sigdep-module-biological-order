@@ -14,21 +14,19 @@ import {
   ORDER_FORM_INITIAL_VALUE,
 } from './forms/order-form-type';
 import OrderForm from './forms/order-form/order-form';
-import { EncounterForm, Patient, PatientIdentifier } from '@spbogui-openmrs/shared/model';
+import { EncounterForm, Patient } from '@spbogui-openmrs/shared/model';
 import {
   useFindConcept,
   useFindFilteredProvider,
-  useFindOnePatient,
   useSaveEncounter,
   useSaveOrder,
 } from '@spbogui-openmrs/shared/ui';
 import { useEffect, useState } from 'react';
-import { ENCOUNTER_PROVIDER_DEFAULT, IdentifierType, initFormValues, notification, siteList } from '@spbogui-openmrs/shared/utils';
+import { initFormValues, notification, siteList } from '@spbogui-openmrs/shared/utils';
 import { useFindLatestObs } from './use-find-latest-obs/use-find-latest-obs';
 import dayjs from 'dayjs';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { EncounterRole , Concepts} from '@spbogui-openmrs/shared/utils';
-import invariant from 'invariant';
 
 /* eslint-disable-next-line */
 export interface BiologicalOrderPatientOrderUiOrderFormProps {
@@ -60,38 +58,25 @@ export function BiologicalOrderPatientOrderUiOrderForm({
   const {
     pregnancyStatus,
     currentlyBreastfeedingChild,
-    initialCd4Absolute,
-    initialCd4Percentage,
     arvInitialYear,
     hivTypeForm,
-    isOntreatmentForm,
-    treatmentStartDate,
-    initialCd4AbsoluteForm,
-    initialCd4PercentageForm, 
+    treatmentStartDate, 
     treatmentLine,
     initialCd4DateForm,
     arvRegimen,
     loading,
     antiretroviralPlan,
-    hasViralLoad,
-    lastViralLoad,
-    lastViralLaboratoryLoad,
-    lastViralDateLoad,
-    hivViralLoadTest,
     accessionNumber,
     accessionNumberDateCreated,
-    //lastCd4CountValue,
-    //lastCd4PercentValue,
-    //lastCd4Date,
     grossHivViralLoadTest,
     initialCD4CountValue,
     initialCD4PercentValue,
     initialCD4DateValue,
-    initialCd4AbsoluteObs,
-    initialCd4PercentageObs,
     biologicalEncounter,
-    lastClotureEncounter,
-    lastestHivViralLoad
+    lastestHivViralLoad,
+    deadDate,
+    selfStopTreatment,
+    negatifVih
   } = useFindLatestObs(
     patient ? patient.uuid : '',
     dayjs(requestDate).format('YYYY-MM-DD'),
@@ -123,7 +108,6 @@ export function BiologicalOrderPatientOrderUiOrderForm({
     console.log(JSON.stringify(values));
     setOrderForm(form.values.encounter);
     setIsSaving(true);
-    handleUpdateParent();
   };
 
 
@@ -137,8 +121,11 @@ export function BiologicalOrderPatientOrderUiOrderForm({
       if(pregnancyStatus){
         form.values.pregnancyStatus = pregnancyStatus.uuid
       }
+      
       if(currentlyBreastfeedingChild){
         form.values.currentlyBreastfeedingChild = currentlyBreastfeedingChild.uuid
+      }else{
+        form.values.currentlyBreastfeedingChild = "1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
       }
      /* if(initialCd4AbsoluteForm){
         console.log({initialCd4AbsoluteForm: initialCd4AbsoluteForm});
@@ -337,6 +324,7 @@ export function BiologicalOrderPatientOrderUiOrderForm({
                       '',
                       5000
                     );
+                    handleUpdateParent();
                   },
                 });
               }
@@ -349,6 +337,7 @@ export function BiologicalOrderPatientOrderUiOrderForm({
                 '',
                 5000
               );
+              handleUpdateParent();
             },
           });
         }
@@ -356,7 +345,7 @@ export function BiologicalOrderPatientOrderUiOrderForm({
 
       setIsSaving(false);
     }
-  }, [form.values.order, isSaving, orderForm, saveEncounter, saveOrder]);
+  }, [form.values.order, handleUpdateParent, isSaving, orderForm, saveEncounter, saveOrder]);
 
   return (
     <> 
@@ -370,23 +359,16 @@ export function BiologicalOrderPatientOrderUiOrderForm({
       {!loading && (
         <>
         {loadValues()}
-        <Paper withBorder>
+        <Paper withBorder id='overflowId9'>
         <Flex
           direction={{ base: 'column', sm: 'row' }}
           gap={{ base: 'sm', sm: 'lg' }}
           justify={{ sm: 'space-between' }}>
       
       <Text></Text>
-      { patient && patient.identifiers[1] ?(
-         <Text p={'xs'} color={'cyan'} weight={'bold'}>
-         UPID : {upid}
-       </Text>
-      )
-       : ""
-      }
     </Flex>
           <Divider />
-          <Paper ml={'0'} mr={'0'} color={'gray'}>
+          <Paper ml={'0'} mr={'0'} color={'gray'} id='overflowId8'> 
             <OrderForm
               form={form}
               patient={patient}
@@ -395,6 +377,9 @@ export function BiologicalOrderPatientOrderUiOrderForm({
               providers={providerSelect}
               regimenList={regimenList}
               isTransfered={isTransfered}
+              isDead={deadDate !== undefined}
+              isStopped={selfStopTreatment !== undefined} 
+              isNegatif={negatifVih !== undefined} 
             />
           </Paper>
         </Paper>
